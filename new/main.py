@@ -21,17 +21,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 apiKey = os.getenv('RATP_API_KEY')
-query = {'MonitoringRef': 'STIF:StopArea:SP:474151:',
-         'LineRef': 'STIF:Line::C01742:'}  # , {'name':'ChÃ¢telet les Halles', 'id':'474151', 'rer':'A'}]
-my_headers = {'apiKey': apiKey}
-dataRatp = {'codesRer': {'C': 'C01727', 'N': 'C01736', 'A': 'C01742'},
-            'arrayArrets': [{'name': 'Gare de Meudon', 'id': '41214', 'rer': 'N'},
-                            {'name': 'Meudon Val Fleury', 'id': '41213', 'rer': 'C'}]}
-
-
-#  response = requests.get('http://httpbin.org/headers', headers=my_headers)  {}
+query = {'MonitoringRef': 'STIF:StopArea:SP:474151:', 'LineRef': 'STIF:Line::C01742:'}  # , {'name':'Châtelet les Halles', 'id':'474151', 'rer':'A'}]
+my_headers = {'apiKey' : apiKey}
+dataRatp = {'codesRer' : {'C': 'C01727', 'N': 'C01736', 'A': 'C01742'},
+            'arrayArrets' : [{'name':'Gare de Meudon', 'id':'41214', 'rer': 'N'}, {'name':'Meudon Val Fleury', 'id':'41213', 'rer':'C'}]}
+#  response = requests.get('http://httpbin.org/headers', headers=my_headers)  {}  
 
 async def getRatpData(saveJson=False):
+
     jsonOutput = {}
     for rerTemp in dataRatp['codesRer'].keys():
         jsonOutput[rerTemp] = []
@@ -42,18 +39,16 @@ async def getRatpData(saveJson=False):
         codeRerTemp = dataRatp['codesRer'][arretArray['rer']]
         codeArretTemp = arretArray['id']
 
-        query = {'MonitoringRef': 'STIF:StopArea:SP:{}:'.format(codeArretTemp),
-                 'LineRef': 'STIF:Line::{}:'.format(codeRerTemp)}
+        query = {'MonitoringRef': 'STIF:StopArea:SP:{}:'.format(codeArretTemp), 'LineRef': 'STIF:Line::{}:'.format(codeRerTemp)}
         #  requestUrl_old = 'https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=STIF%3AStopArea%3ASP%3A{}%3A&LineRef=STIF%3ALine%3A%3A{}%3A'.format(codeArretTemp, codeRerTemp)
         #  requestUrl = 'https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=STIF:StopArea:SP:{}:&LineRef=STIF:Line::{}:'.format(codeArretTemp, codeRerTemp)
         requestUrl = 'https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring'
         # print(query)
         response = requests.get(requestUrl, params=query, headers=my_headers)
-        monitoredStopsArray = response.json()['Siri']['ServiceDelivery']['StopMonitoringDelivery'][0][
-            'MonitoredStopVisit']
+        monitoredStopsArray = response.json()['Siri']['ServiceDelivery']['StopMonitoringDelivery'][0]['MonitoredStopVisit']
         # print(monitoredStopsArray)
         for monitoredStopTemp in monitoredStopsArray:
-
+            
             jsonInputTemp = monitoredStopTemp['MonitoredVehicleJourney']
             # print(jsonInputTemp['MonitoredCall'])
             jsonTemp = {}
@@ -100,83 +95,75 @@ async def getRatpData(saveJson=False):
         fileName = '{}'.format(currentTime).replace(' ', '_').replace(':', '-').replace('.', '_')
         print('fileName : ', fileName)
 
+
         jsonArray = glob.glob('data/ratp/*.json')
         while len(jsonArray) > 10:
             os.remove('{}'.format(jsonArray[0]))
             jsonArray = glob.glob('data/ratp/*.json')
 
-        # json.dumps('data/ratp/{}.json'.format(fileName), jsonOutput)
-
+        #json.dumps('data/ratp/{}.json'.format(fileName), jsonOutput)
+        
         with open('data/ratp/{}.json'.format(fileName), "w") as outfile:
             json.dump(jsonOutput, outfile)
         #    outfile.write('{}'.format(jsonOutput))
 
     return jsonOutput
 
-
 async def getweather(saveJson=False):
-    # declare the client. the measuring unit used defaults to the metric system (celcius, km/h, etc.)
-    async with python_weather.Client(unit=python_weather.METRIC) as client:
-        # fetch a weather forecast from a city
-        weather = await client.get('Meudon')
-        jsonOutput = {}
-        jsonOutput['now'] = {}
-        jsonOutput['now']['temperature'] = weather.current.temperature
-        jsonOutput['now']['description'] = weather.current.description
-        jsonOutput['now']['kind'] = '{}'.format(weather.current.kind).replace('Kind.', '')
-        # returns the current day's forecast temperature (int)
-        print(weather.current)
+  # declare the client. the measuring unit used defaults to the metric system (celcius, km/h, etc.)
+  async with python_weather.Client(unit=python_weather.METRIC) as client:
+    # fetch a weather forecast from a city
+    weather = await client.get('Meudon')
+    jsonOutput = {}
+    jsonOutput['now'] = {}
+    jsonOutput['now']['temperature'] = weather.current.temperature
+    jsonOutput['now']['description'] = weather.current.description
+    jsonOutput['now']['kind'] = '{}'.format(weather.current.kind).replace('Kind.', '')
+    # returns the current day's forecast temperature (int)
+    print(weather.current)
+    
+    # get the weather forecast for a few days
+    for forecast in weather.forecasts:
+        # print(forecast) datetime.date(2024, 1, 24)
+        foreCastDate = '{}'.format(forecast.date).replace('datetime.date(', '').replace(')', '').replace(' ', '').replace(',', '-')
+      
+        jsonOutput[foreCastDate] = {}
+        jsonOutput[foreCastDate]['hourly'] = []
+        jsonOutput[foreCastDate]['temperature'] = forecast.temperature
+        jsonOutput[foreCastDate]['astronomy'] = {}
+        jsonOutput[foreCastDate]['astronomy']['moon_phase'] = '{}'.format(forecast.astronomy.moon_phase).replace('Phase.', '')
+        jsonOutput[foreCastDate]['astronomy']['sun_rise'] = '{}'.format(forecast.astronomy.sun_rise).replace('datetime.date(', '').replace(')', '').replace(' ', '').replace(',', '-')
+        jsonOutput[foreCastDate]['astronomy']['sun_set'] = '{}'.format(forecast.astronomy.sun_set).replace('datetime.date(', '').replace(')', '').replace(' ', '').replace(',', '-')
+      
+        # hourly forecasts
+        for hourly in forecast.hourly:
+            jsonHourly = {}
+            foreCastTime = '{}'.format(hourly.time).replace('datetime.date(', '').replace(')', '').replace(' ', '').replace(',', '-').replace(':', '-')
+            jsonHourly['time'] = foreCastTime
+            jsonHourly['temperature'] = hourly.temperature
+            jsonHourly['description'] = hourly.description
+            jsonHourly['kind'] = '{}'.format(hourly.kind).replace('Kind.', '')
+            
+            jsonOutput[foreCastDate]['hourly'].append(jsonHourly)
+            # print(f' --> {hourly!r}')
 
-        # get the weather forecast for a few days
-        for forecast in weather.forecasts:
-            # print(forecast) datetime.date(2024, 1, 24)
-            foreCastDate = '{}'.format(forecast.date).replace('datetime.date(', '').replace(')', '').replace(' ',
-                                                                                                             '').replace(
-                ',', '-')
+    if saveJson:
+        print('Saving Weather json file')
+        currentTime = datetime.datetime.now()
+        fileName = '{}'.format(currentTime).replace(' ', '_').replace(':', '-').replace('.', '_')
+        print('fileName : ', fileName)
 
-            jsonOutput[foreCastDate] = {}
-            jsonOutput[foreCastDate]['hourly'] = []
-            jsonOutput[foreCastDate]['temperature'] = forecast.temperature
-            jsonOutput[foreCastDate]['astronomy'] = {}
-            jsonOutput[foreCastDate]['astronomy']['moon_phase'] = '{}'.format(forecast.astronomy.moon_phase).replace(
-                'Phase.', '')
-            jsonOutput[foreCastDate]['astronomy']['sun_rise'] = '{}'.format(forecast.astronomy.sun_rise).replace(
-                'datetime.date(', '').replace(')', '').replace(' ', '').replace(',', '-')
-            jsonOutput[foreCastDate]['astronomy']['sun_set'] = '{}'.format(forecast.astronomy.sun_set).replace(
-                'datetime.date(', '').replace(')', '').replace(' ', '').replace(',', '-')
-
-            # hourly forecasts
-            for hourly in forecast.hourly:
-                jsonHourly = {}
-                foreCastTime = '{}'.format(hourly.time).replace('datetime.date(', '').replace(')', '').replace(' ',
-                                                                                                               '').replace(
-                    ',', '-').replace(':', '-')
-                jsonHourly['time'] = foreCastTime
-                jsonHourly['temperature'] = hourly.temperature
-                jsonHourly['description'] = hourly.description
-                jsonHourly['kind'] = '{}'.format(hourly.kind).replace('Kind.', '')
-
-                jsonOutput[foreCastDate]['hourly'].append(jsonHourly)
-                # print(f' --> {hourly!r}')
-
-        if saveJson:
-            print('Saving Weather json file')
-            currentTime = datetime.datetime.now()
-            fileName = '{}'.format(currentTime).replace(' ', '_').replace(':', '-').replace('.', '_')
-            print('fileName : ', fileName)
-
+        jsonArray = glob.glob('data/weather/*.json')
+        while len(jsonArray) > 10:
+            os.remove('{}'.format(jsonArray[0]))
             jsonArray = glob.glob('data/weather/*.json')
-            while len(jsonArray) > 10:
-                os.remove('{}'.format(jsonArray[0]))
-                jsonArray = glob.glob('data/weather/*.json')
 
-            with open('data/weather/{}.json'.format(fileName), "w") as outfile:
-                json.dump(jsonOutput, outfile)
+        with open('data/weather/{}.json'.format(fileName), "w") as outfile:
+            json.dump(jsonOutput, outfile)
+        
+        #    outfile.write('{}'.format(jsonOutput))
 
-            #    outfile.write('{}'.format(jsonOutput))
-
-        return jsonOutput
-
+    return jsonOutput
 
 def getLatestData():
     jsonArray = glob.glob('data/weather/*.json')
@@ -185,36 +172,35 @@ def getLatestData():
     fileName = jsonArray[0]
     print('fileNameWeather : ', fileName)
     with open(fileName, "r") as weatherFile:
-        jsonFile = weatherFile.read()
-        weatherJson = json.loads(jsonFile)
-
+      jsonFile = weatherFile.read()
+      weatherJson = json.loads(jsonFile)
+      
     jsonArray = glob.glob('data/ratp/*.json')
     jsonArray.sort()
     jsonArray.reverse()
     fileName = jsonArray[0]
     print('fileNameRatp : ', fileName)
     with open(fileName, "r") as ratpFile:
-        ratpJson = json.loads(ratpFile.read())
-
+      ratpJson =json.loads(ratpFile.read())
+    
     return [weatherJson, ratpJson]
 
-
 # LED strip configuration:
-LED_COUNT = 240  # Number of LED pixels.
-LED_PIN = 18  # GPIO pin connected to the pixels (18 uses PWM!).
-LED_COUNT_1 = 240  # Number of LED pixels.
-LED_PIN_1 = 19  # GPIO pin connected to the pixels (18 uses PWM!).
-LED_COUNT_2 = 120  # Number of LED pixels.
-LED_PIN_2 = 18  # GPIO pin connected to the pixels (12 uses PWM!).
+LED_COUNT = 240        # Number of LED pixels.
+LED_PIN = 18          # GPIO pin connected to the pixels (18 uses PWM!).
+LED_COUNT_1 = 240        # Number of LED pixels.
+LED_PIN_1 = 19          # GPIO pin connected to the pixels (18 uses PWM!).
+LED_COUNT_2 = 120        # Number of LED pixels.
+LED_PIN_2 = 18          # GPIO pin connected to the pixels (12 uses PWM!).
 # LED_PIN = 10        # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
-LED_DMA = 10  # DMA channel to use for generating signal (try 10)
-LED_DMA_2 = 11  # DMA channel to use for generating signal (try 10)
+LED_DMA = 10          # DMA channel to use for generating signal (try 10)
+LED_DMA_2 = 11          # DMA channel to use for generating signal (try 10)
 LED_BRIGHTNESS = 255  # Set to 0 for darkest and 255 for brightest
-LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
-LED_CHANNEL = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
-LED_CHANNEL_1 = 1  # set to '1' for GPIOs 13, 19, 41, 45 or 53
-LED_CHANNEL_2 = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
+LED_INVERT = False    # True to invert the signal (when using NPN transistor level shift)
+LED_CHANNEL = 0      # set to '1' for GPIOs 13, 19, 41, 45 or 53
+LED_CHANNEL_1 = 1      # set to '1' for GPIOs 13, 19, 41, 45 or 53
+LED_CHANNEL_2 = 0      # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
 rgbLightDict = {}
 ### https://www.schemecolor.com/sky-weather.php
@@ -232,37 +218,36 @@ rgbLightDict['middle_grey'] = [127, 155, 166]
 rgbLightDict['dark_grey'] = [78, 105, 105]
 
 ### sunset levels : https://www.color-hex.com/color-palette/1040079
-rgbLightDict['sunset1'] = [242, 176, 53]  # yellow / orange
-rgbLightDict['sunset2'] = [241, 157, 0]
-rgbLightDict['sunset3'] = [242, 143, 22]
-rgbLightDict['sunset4'] = [212, 140, 5]
-rgbLightDict['sunset5'] = [242, 101, 19]
-rgbLightDict['sunset6'] = [210, 105, 0]
-rgbLightDict['sunset7'] = [217, 59, 24]
-rgbLightDict['sunset8'] = [195, 86, 3]
-rgbLightDict['sunset9'] = [152, 66, 0]
-rgbLightDict['sunset10'] = [217, 30, 30]  # red
+rgbLightDict['sunset1'] = [242,176,53] #yellow / orange
+rgbLightDict['sunset2'] = [241,157,0]
+rgbLightDict['sunset3'] = [242,143,22]
+rgbLightDict['sunset4'] = [212,140,5]
+rgbLightDict['sunset5'] = [242,101,19]
+rgbLightDict['sunset6'] = [210,105,0]
+rgbLightDict['sunset7'] = [217,59,24]
+rgbLightDict['sunset8'] = [195,86,3]
+rgbLightDict['sunset9'] = [152,66,0]
+rgbLightDict['sunset10'] = [217,30,30] #red
 
-weatherDict = {}
+weatherDict = {}                
 weatherDict['SUNNY'] = 'light_blue'  # 113
-weatherDict['PARTLY_CLOUDY'] = 'light_grey'  # 116
+weatherDict['PARTLY_CLOUDY'] = 'light_grey'  #116
 weatherDict['CLOUDY'] = 'middle_grey'  # 119
 weatherDict['VERY_CLOUDY'] = 'dark_grey'  # 122
-weatherDict['FOG'] = 'light_grey'  # 143
-weatherDict['LIGHT_SHOWERS'] = 'light_grey'  # 176
-weatherDict['LIGHT_SLEET_SHOWERS'] = 'light_grey'  # 179
-weatherDict['LIGHT_SLEET'] = 'light_grey'  # 182
+weatherDict['FOG'] = 'light_grey'  #143
+weatherDict['LIGHT_SHOWERS'] = 'light_grey'  #176
+weatherDict['LIGHT_SLEET_SHOWERS'] = 'light_grey'  #179
+weatherDict['LIGHT_SLEET'] = 'light_grey'  #182
 weatherDict['THUNDERY_SHOWERS'] = 'dark_grey'  # 200
-weatherDict['LIGHT_SNOW'] = 'light_grey'  # 227
+weatherDict['LIGHT_SNOW'] = 'light_grey'  #227
 weatherDict['HEAVY_SNOW'] = 'dark_grey'  # 230
-weatherDict['LIGHT_RAIN'] = 'light_blue'  # 266
+weatherDict['LIGHT_RAIN'] = 'light_blue'  #266
 weatherDict['HEAVY_SHOWERS'] = 'dark_grey'  # 299
 weatherDict['HEAVY_RAIN'] = 'dark_grey'  # 302
 weatherDict['LIGHT_SNOW_SHOWERS'] = 'middle_grey'  # 323
 weatherDict['HEAVY_SNOW_SHOWERS'] = 'dark_grey'  # 335
 weatherDict['THUNDERY_HEAVY_RAIN'] = 'middle_grey'  # 389
 weatherDict['THUNDERY_SNOW_SHOWERS'] = 'dark_grey'  # 392
-
 
 #
 # weatherToRGBdict = {  # description/kind
@@ -327,7 +312,7 @@ def startWeatherMode(stripArray, weatherJson):
             print('did not find Astronomy in ', keyTemp)
     # currentTime = '{}'.format(currentTime).replace(' ', '_').replace(':', '-').replace('.', '_')
 
-    currentSunsetLevel = 'sunset{}'.format(min(max(1, int(float(currentHour) / 2.4) + 1), 10))
+    currentSunsetLevel = 'sunset{}'.format(min(max(1, int(float(currentHour) / 2.4)+1), 10))
     try:
         sunsetRgb = rgbLightDict[currentSunsetLevel]
     except KeyError as err:
@@ -347,8 +332,7 @@ def startWeatherMode(stripArray, weatherJson):
         print('rgb 1 and 2 will be set to nowRgb = ', nowRgb)
         rgb1 = nowRgb
         rgb2 = nowRgb
-    if currentHour > int(sunsetTime.split(':')[0]) or (
-            currentHour >= int(sunsetTime.split(':')[0]) and currentMin >= int(sunsetTime.split(':')[1])):
+    if currentHour > int(sunsetTime.split(':')[0]) or (currentHour >= int(sunsetTime.split(':')[0]) and currentMin >= int(sunsetTime.split(':')[1])):
         print('Sun has set, we are after sunsetTime : ', sunsetTime)
         rgb2 = sunsetRgb
         print('rgb2 will be set to sunsetRgb = ', sunsetRgb)
@@ -371,10 +355,8 @@ def glow(stripArray, colorArray, wait_ms=1000, percent=5, loop=100):
     [strip240, strip120] = stripArray
     [R1, G1, B1, R2, G2, B2] = colorArray
 
-    colorTemp1 = Color(int(float(R1) * float(percent) / 100.0), int(float(G1) * float(percent) / 100.0),
-                       int(float(B1) * float(percent) / 100.0))
-    colorTemp2 = Color(int(float(R2) * float(percent) / 100.0), int(float(G2) * float(percent) / 100.0),
-                       int(float(B2) * float(percent) / 100.0))
+    colorTemp1 = Color(int(float(R1)*float(percent)/100.0), int(float(G1)*float(percent)/100.0), int(float(B1)*float(percent)/100.0))
+    colorTemp2 = Color(int(float(R2)*float(percent)/100.0), int(float(G2)*float(percent)/100.0), int(float(B2)*float(percent)/100.0))
     # colorTemp2 = Color(R2, G2, B2)
     # inverseColorTemp = Color(255-R, G, B)
     for i in range(strip120.numPixels()):
@@ -388,8 +370,9 @@ def glow(stripArray, colorArray, wait_ms=1000, percent=5, loop=100):
     strip240.show()
     if (wait_ms > 0): time.sleep(wait_ms / 2000.0)
 
-    if loop > 0:
-        glow(stripArray, colorArray, wait_ms=wait_ms, percent=max(0, 100 - 1 * loop), loop=int(loop - 1))
+    if loop>0:
+        glow(stripArray, colorArray, wait_ms=wait_ms, percent=max(0, 100-1*loop), loop=int(loop-1))
+
 
 
 def doubleColorWipe(stripArray, colorArray, wait_ms=50):
@@ -402,34 +385,32 @@ def doubleColorWipe(stripArray, colorArray, wait_ms=50):
     for i in range(strip120.numPixels()):
 
         strip120.setPixelColor(i, colorTemp1)
-        # print('in colorWipe with i : ', i)
-        # print('and color : ', color)
-        # print('and strip.numPixels() : ', strip.numPixels())
+            # print('in colorWipe with i : ', i)
+            # print('and color : ', color)
+            # print('and strip.numPixels() : ', strip.numPixels())
         strip240.setPixelColor(i, colorTemp2)
-        strip240.setPixelColor(strip240.numPixels() - i, colorTemp2)
+        strip240.setPixelColor(strip240.numPixels()-i, colorTemp2)
         strip120.show()
         strip240.show()
         if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
 
-
 def colorWipe(strip, color, wait_ms=50):
-    # Define functions which animate LEDs in various ways.
+# Define functions which animate LEDs in various ways.
     """Wipe color across display a pixel at a time."""
 
     inverse = randrange(2)
 
     # OK print('inverse : ', inverse)
-    for i in range(strip.numPixels() + 1):
+    for i in range(strip.numPixels()+1):
         # print('in colorWipe with i : ', i)
         # print('and color : ', color)
         # print('and strip.numPixels() : ', strip.numPixels())
-        if inverse > 0:
-            strip.setPixelColor(strip.numPixels() - i, color)
+        if inverse > 0: 
+            strip.setPixelColor(strip.numPixels()-i, color)
             # print('in colorWipe with strip.numPixels()-i : ', strip.numPixels()-i)
             # if i == strip.numPixels()-1:
             #     strip.setPixelColor(0, color)
-        else:
-            strip.setPixelColor(i, color)
+        else: strip.setPixelColor(i, color)
         strip.show()
         if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
 
@@ -493,8 +474,11 @@ def theaterChaseRainbow(strip, wait_ms=100):
 if __name__ == '__main__':
     # Process arguments
 
-    # see https://stackoverflow.com/questions/45600579/asyncio-event-loop-is-closed-when-getting-loop
+
+  # see https://stackoverflow.com/questions/45600579/asyncio-event-loop-is-closed-when-getting-loop
     # for more details
+
+    
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
@@ -520,7 +504,7 @@ if __name__ == '__main__':
 
         while True:
 
-            if userModeInput in [2, '2', 'Ã©', 'z', 'Z']:
+            if userModeInput in [2, '2', 'é', 'z', 'Z']:
                 currentMode = 'colors'
             if userModeInput in [3, '3', '"', 'e', 'E']:
                 currentMode = 'ratp'
@@ -540,7 +524,7 @@ if __name__ == '__main__':
                 B = randrange(255)
                 print(' => RandomColor : (', R, ', ', G, ', ', B, ')')
                 colorTemp = Color(R, G, B)
-                doubleColorWipe([strip240, strip120], [R, G, B, int((R + G + B) / 765), G, 255], 50)  # Random wipe
+                doubleColorWipe([strip240, strip120], [R, G, B, int((R+G+B)/765), G, 255], 50)  # Random wipe
 
                 colorWipe(strip120, Color(0, 0, 0), 0)  # Black wipe
                 colorWipe(strip240, Color(0, 0, 0), 0)  # Black wipe
@@ -549,9 +533,10 @@ if __name__ == '__main__':
 
                 if os.name == 'nt':
                     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
+        
                 asyncio.run(getweather(saveJson=True))
                 asyncio.run(getRatpData(saveJson=True))
+
 
                 # print('Theater chase animations.')
                 # theaterChase(strip, Color(127, 127, 127))  # White theater chase

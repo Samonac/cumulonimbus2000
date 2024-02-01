@@ -1,0 +1,4 @@
+rpi_ws281x
+python_weather
+requests
+python-dotenv
