@@ -506,7 +506,7 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5)
             
             transitionDictTemp['temp_led_array'][led_num] = []
             # need to do maxDiff delta in 5 steps for a total of 50ms
-            for i in range(1, transition_steps):
+            for i in range(1, transition_steps+1):
                 if i == transition_steps:
                     #print('last step')
                     tempR = R2
@@ -522,7 +522,7 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5)
                 
                 transitionDictTemp['temp_led_array'][led_num].append(tempColor)
                 
-    for i in range(1, transition_steps):
+    for i in range(0, transition_steps):
         print(' => doing step ', i)
         for transitionDictTemp in transitionDictArray:
 
@@ -535,7 +535,7 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5)
             for led_num in transitionDictTemp['temp_led_array'].keys():
                 desired_color_Array = transitionDictTemp['temp_led_array'][led_num]
                 current_desired_color = desired_color_Array[i]
-                print('led_num ', led_num, ' needs to go to desired_color : ', desired_color)
+                print('led_num ', led_num, ' needs to go to desired_color : ', current_desired_color)
                 [tempR, tempG, tempB] = current_desired_color
                 strip.setPixelColor(led_num, Color(tempR, tempG, tempB))
                 
