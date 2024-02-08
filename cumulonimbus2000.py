@@ -809,6 +809,13 @@ if __name__ == '__main__':
                     minY = 0
                     maxY = 40
                     print('Zone to light up : ({}, {}) ({}, {})'.format(minX, minY, maxX, maxY))
+                    if minX>maxX:
+                        temp = minX
+                        minX = maxX
+                        maxX = temp
+                        temp = minY
+                        minY = maxY
+                        maxY = temp
                     for x in range(minX, maxX+1):
                         # print('x :', x)
                         
