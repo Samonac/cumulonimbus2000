@@ -751,20 +751,20 @@ if __name__ == '__main__':
                 # identifyLedPosition(strip120, 120)
                 # print('\nDone with first strip !\n')
                 # identifyLedPositi,on(strip240, 300)
-                minX = input('min X ?')
+                minX = input('min X ?\n')
                 minX = max(0, int(minX))
-                maxX = input('max X ?')
+                maxX = input('max X ?\n')
                 maxX = min(160, int(maxX))
-                minY = input('min Y ?')
+                minY = input('min Y ?\n')
                 minY = max(0, int(minY))
-                maxY = input('max Y ?')
+                maxY = input('max Y ?\n')
                 maxY = min(160, int(maxY))
-                filename = '\data\led_config\strip120.json'
+                filename = '/data/led_config/strip120.json'
                 with open(filename, "r") as json120file:
                     jsonFile = json120file.read()
                     json120 = json.loads(jsonFile)
                 
-                filename = '\data\led_config\strip300.json'
+                filename = '/data/led_config/strip300.json'
                 with open(filename, "r") as json120file:
                     jsonFile = json120file.read()
                     json300 = json.loads(jsonFile)
@@ -922,6 +922,7 @@ if __name__ == '__main__':
               colorWipe(strip120, [0, 0, 0], 3)
               colorWipe(strip240, [0, 0, 0], 1)
               
+              print(' 0 : EXIT')
               print(' a-1 / none : Weather')
               print(' z-2 : Colors')
               print(' e-3 : Ratp')
@@ -930,6 +931,11 @@ if __name__ == '__main__':
               print(' y-6 : Identify Led X,Y positions')
               userModeInput = input('specific mode?\n')
               print('userModeInput = {} of type {}'.format(userModeInput, type(userModeInput)))
+              if userModeInput == '0':
+                fullColor(strip120, [0, 0, 0])
+                fullColor(strip240, [0, 0, 0])
+
+                break
             
       except KeyboardInterrupt:
         fullColor(strip120, [0, 0, 0])
