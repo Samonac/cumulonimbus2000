@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
+# Initial Author:
 # NeoPixel library strandtest example
 # Author: Tony DiCola (tony@tonydicola.com)
-#
 # Direct port of the Arduino NeoPixel library strandtest example.  Showcases
 # various animations on a strip of NeoPixels.
+# Code adapted for specific usecase by : Samonac
 
 import time
 from rpi_ws281x import PixelStrip, Color
@@ -17,9 +18,10 @@ import json
 import datetime
 import glob
 from dotenv import load_dotenv
+import string
 
 load_dotenv()
-
+intFullColor=100
 apiKey = os.getenv('RATP_API_KEY')
 query = {'MonitoringRef': 'STIF:StopArea:SP:474151:',
          'LineRef': 'STIF:Line::C01742:'}  # , {'name':'Châtelet les Halles', 'id':'474151', 'rer':'A'}]
@@ -202,19 +204,22 @@ def getLatestData():
 # LED strip configuration:
 LED_COUNT = 240  # Number of LED pixels.
 LED_PIN = 18  # GPIO pin connected to the pixels (18 uses PWM!).
-LED_COUNT_1 = 240  # Number of LED pixels.
+LED_COUNT_1 = 300  # Number of LED pixels.
 LED_PIN_1 = 19  # GPIO pin connected to the pixels (18 uses PWM!).
 LED_COUNT_2 = 120  # Number of LED pixels.
 LED_PIN_2 = 18  # GPIO pin connected to the pixels (12 uses PWM!).
 # LED_PIN = 10        # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10  # DMA channel to use for generating signal (try 10)
+LED_DMA_1 = 10  # DMA channel to use for generating signal (try 10)
 LED_DMA_2 = 11  # DMA channel to use for generating signal (try 10)
 LED_BRIGHTNESS = 255  # Set to 0 for darkest and 255 for brightest
 LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
 LED_CHANNEL_1 = 1  # set to '1' for GPIOs 13, 19, 41, 45 or 53
 LED_CHANNEL_2 = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
+LED_HISTORY_1 = [[0,0,0]] * LED_COUNT_1
+LED_HISTORY_2 = [[0,0,0]] * LED_COUNT_2
 
 rgbLightDict = {}
 ### https://www.schemecolor.com/sky-weather.php
@@ -391,7 +396,6 @@ def glow(stripArray, colorArray, wait_ms=1000, percent=5, loop=100):
     if loop > 0:
         glow(stripArray, colorArray, wait_ms=wait_ms, percent=max(0, 100 - 1 * loop), loop=int(loop - 1))
 
-
 def doubleColorWipe(stripArray, colorArray, wait_ms=50):
     [strip240, strip120] = stripArray
     [R1, G1, B1, R2, G2, B2] = colorArray
@@ -410,6 +414,44 @@ def doubleColorWipe(stripArray, colorArray, wait_ms=50):
         strip120.show()
         strip240.show()
         if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
+
+def fullColor(strip, color=Color(100,100,100)):
+    inverse=0
+    # OK print('inverse : ', inverse)
+    color
+    for i in range(strip.numPixels() + 1):
+        print('in colorWipe with i : ', i)
+        print('and color : ', color)
+        print('and strip.numPixels() : ', strip.numPixels())
+        if inverse > 0:
+            strip.setPixelColor(strip.numPixels() - i, color)
+            # print('in colorWipe with strip.numPixels()-i : ', strip.numPixels()-i)
+            # if i == strip.numPixels()-1:
+            #     strip.setPixelColor(0, color)
+        else:
+            strip.setPixelColor(i, color)
+        
+        time.sleep(10 / 1000.0)
+    strip.show()
+
+def fluidColorTransition(strip, led_num, desired_color, total_wait_ms, transition_steps):
+    print('in fluidColorTransition(strip, led_num, desired_color) with : ', [strip, led_num, desired_color])
+
+    currentLedColor = []
+    if strip.numPixels() == LED_COUNT_1:
+        currentLedColor = LED_HISTORY_1[led_num]
+    elif strip.numPixels() == LED_COUNT_2:
+        currentLedColor = LED_HISTORY_2[led_num]
+    
+    if currentLedColor == []:
+        return IndexError('strip could not be identified')
+    
+    print('currentLedColor : ', currentLedColor)
+
+    # identifiy how much of a difference between the two colors
+    desired_color
+
+
 
 
 def colorWipe(strip, color, wait_ms=50):
@@ -432,7 +474,6 @@ def colorWipe(strip, color, wait_ms=50):
             strip.setPixelColor(i, color)
         strip.show()
         if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
-
 
 def theaterChase(strip, color, wait_ms=500, iterations=5):
     """Movie theater light style chaser animation."""
@@ -506,77 +547,152 @@ if __name__ == '__main__':
     strip240.begin()
     strip120.begin()
 
-    print(' a-1 / none : Weather')
-    print(' z-2 : Colors')
-    print(' e-3 : Ratp')
-
-    userModeInput = input('specific mode?\n')
-    currentMode = 'colors'
+    # todo : remove
+    
+    currentMode = 'colors' # skipFirst 
+    userModeInput = 'temp'
+     
+    if currentMode == '':
+      print(' a-1 / none : Weather')
+      print(' z-2 : Colors')
+      print(' e-3 : Ratp')
+      print(' r-4 : FullColor')
+      print(' t-5 : SpecificColor')
+      userModeInput = input('specific mode?\n')
+      print('userModeInput = {} of type {}'.format(userModeInput, type(userModeInput)))
+      
     print('Press Ctrl-C to quit.')
     if not args.clear:
         print('Use "-c" argument to clear LEDs on exit')
-
-    try:
-
-        while True:
-
-            if userModeInput in [2, '2', 'é', 'z', 'Z']:
-                currentMode = 'colors'
-            if userModeInput in [3, '3', '"', 'e', 'E']:
-                currentMode = 'ratp'
-                print('not implemented yet')
-                currentMode = 'weather'
-            print('Mode : ', currentMode)
-
-            if currentMode == 'colors':
-                print('Boot : Color wipe animations.')
-
-                colorWipe(strip240, Color(0, 255, 0))  # Green wipe
-                colorWipe(strip120, Color(0, 255, 255))  # Cyan wipe
-                colorWipe(strip240, Color(0, 0, 255))  # Blue wipe
-                # print(randrange(255))
-                R = randrange(255)
-                G = randrange(255)
-                B = randrange(255)
-                print(' => RandomColor : (', R, ', ', G, ', ', B, ')')
-                colorTemp = Color(R, G, B)
-                doubleColorWipe([strip240, strip120], [R, G, B, int((R + G + B) / 765), G, 255], 50)  # Random wipe
-
-                colorWipe(strip120, Color(0, 0, 0), 0)  # Black wipe
-                colorWipe(strip240, Color(0, 0, 0), 0)  # Black wipe
-
-            else:
-
-                if os.name == 'nt':
-                    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
-                asyncio.run(getweather(saveJson=True))
-                asyncio.run(getRatpData(saveJson=True))
-
-                # print('Theater chase animations.')
-                # theaterChase(strip, Color(127, 127, 127))  # White theater chase
-                # theaterChase(strip, Color(127, 0, 0))  # Red theater chase
-                # theaterChase(strip120, Color(127, 0, 0))  # Red theater chase
-                # theaterChase(strip, Color(0, 0, 127))  # Blue theater chase
-                # theaterChase(strip240, Color(0, 0, 127))  # Blue theater chase
-
-                # print('Rainbow animations.')
-                # rainbow(strip)
-                # rainbowCycle(strip120)
-                # rainbowCycle(strip240)
-                # theaterChaseRainbow(strip120)
-                # theaterChaseRainbow(strip240)
-
-                #  Waiting for instructions ? Automatically start weatherMode ?
-                [weatherJson, ratpJson] = getLatestData()
-                if currentMode == 'weather':
-                    startWeatherMode([strip240, strip120], weatherJson)
-                if currentMode == 'ratp':
-                    print('not implemented yet')
-                    # startRatpMode(ratpJson)
-
-    except KeyboardInterrupt:
+    relaunchIndex=0
+    while True: 
+      try:
+        print('relaunchIndex =', relaunchIndex)
+        relaunchIndex+=1  
+        if relaunchIndex < 100:
+          while True:
+          
+            print('userModeInput = {} of type {}'.format(userModeInput, type(userModeInput)))
+            try:  
+              if userModeInput in [1, '1', '&', 'a', 'A']:
+                  currentMode = 'weather'
+              if userModeInput in [2, '2', 'é', 'z', 'Z']:
+                  currentMode = 'colors'
+              if userModeInput in [3, '3', '"', 'e', 'E']:
+                  currentMode = 'ratp'
+                  print('not implemented yet')
+                  currentMode = 'weather'
+              
+              if userModeInput in [4, '4', "'", 'r', 'R']:
+                  currentMode = 'fullColor'
+              if userModeInput in [5, '5', '(', 't', 'T']:
+                  currentMode = 'specificColor'
+                  
+              print('Mode : ', currentMode)
+              
+              if currentMode == 'specificColor':
+              
+                  intFullColor = input('White intensity (to test yellowing due to lack of power) [1-255]: ')
+                  intFullColor = int(intFullColor.strip(string.ascii_letters))
+                  
+                  r_input = input('R : ')
+                  r_input = int(r_input.strip(string.ascii_letters))
+                  g_input = input('G : ')
+                  g_input = int(g_input.strip(string.ascii_letters))
+                  b_input = input('B : ')
+                  b_input = int(b_input.strip(string.ascii_letters))
+                  time.sleep(3)
+                  colorWipe(strip240, Color(intFullColor,intFullColor,intFullColor))
+                  colorWipe(strip120, Color(intFullColor,intFullColor,intFullColor))
+                  time.sleep(3)
+                  colorWipe(strip240, Color(r_input,g_input,b_input))
+                  colorWipe(strip120, Color(r_input,g_input,b_input))
+                  time.sleep(3)
+                  colorWipe(strip240, Color(intFullColor,intFullColor,intFullColor))
+                  colorWipe(strip120, Color(intFullColor,intFullColor,intFullColor))
+                  fullColor(strip120)
+                  fullColor(strip240)
+                  
+              if currentMode == 'fullColor':
+                  time.sleep(3)
+                  colorWipe(strip240, Color(intFullColor,intFullColor,intFullColor))
+                  colorWipe(strip120, Color(intFullColor,intFullColor,intFullColor))
+                  time.sleep(3)
+                  
+                  fullColor(strip120)
+                  fullColor(strip240)
+                  
+              if currentMode == 'colors':
+              
+                  #print('Boot : Color wipe animations.')
+  
+                  #colorWipe(strip240, Color(0, 255, 0))  # Green wipe
+                  #colorWipe(strip120, Color(0, 255, 255))  # Cyan wipe
+                  #colorWipe(strip240, Color(0, 0, 255))  # Blue wipe
+                  # print(randrange(255))
+                  R = randrange(255)
+                  G = randrange(255)
+                  B = randrange(255)
+                  print(' => RandomColor1 : (', R, ', ', G, ', ', B, ')')
+                  colorTemp = Color(R, G, B)
+                  R2 = randrange(255)
+                  G2 = randrange(255)
+                  B2 = randrange(255)
+                  print(' => RandomColor2 : (', R2, ', ', G2, ', ', B2, ')')
+                  colorTemp2 = Color(R2, G2, B2)
+                  
+                  # doubleColorWipe([strip240, strip120], [R, G, B, int((R + G + B) / 765), G, 255], 50)  # Random wipe
+                  doubleColorWipe([strip240, strip120], [R, G, B, R2, G2, B2], 200)  # Random wipe
+                  
+                  doubleColorWipe([strip240, strip120], [R2, G2, B2, R, G, B], 200)  # iNVERSED Random wipe
+  
+                  #colorWipe(strip120, Color(0, 0, 0), 0)  # Black wipe
+                  #colorWipe(strip240, Color(0, 0, 0), 0)  # Black wipe
+  
+              else:
+  
+                  if os.name == 'nt':
+                      asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+  
+                  asyncio.run(getweather(saveJson=True))
+                  asyncio.run(getRatpData(saveJson=True))
+  
+                  # print('Theater chase animations.')
+                  # theaterChase(strip, Color(127, 127, 127))  # White theater chase
+                  # theaterChase(strip, Color(127, 0, 0))  # Red theater chase
+                  # theaterChase(strip120, Color(127, 0, 0))  # Red theater chase
+                  # theaterChase(strip, Color(0, 0, 127))  # Blue theater chase
+                  # theaterChase(strip240, Color(0, 0, 127))  # Blue theater chase
+  
+                  # print('Rainbow animations.')
+                  # rainbow(strip)
+                  # rainbowCycle(strip120)
+                  # rainbowCycle(strip240)
+                  # theaterChaseRainbow(strip120)
+                  # theaterChaseRainbow(strip240)
+  
+                  #  Waiting for instructions ? Automatically start weatherMode ?
+                  [weatherJson, ratpJson] = getLatestData()
+                  if currentMode == 'weather':
+                      startWeatherMode([strip240, strip120], weatherJson)
+                  if currentMode == 'ratp':
+                      print('not implemented yet')
+                      # startRatpMode(ratpJson)
+  
+            except KeyboardInterrupt:
+              colorWipe(strip120, Color(1, 1, 1), 5)
+              colorWipe(strip240, Color(1, 1, 1), 2)
+              
+              print(' a-1 / none : Weather')
+              print(' z-2 : Colors')
+              print(' e-3 : Ratp')
+              print(' r-4 : FullColor')
+              print(' t-5 : SpecificColor')
+              userModeInput = input('specific mode?\n')
+              print('userModeInput = {} of type {}'.format(userModeInput, type(userModeInput)))
+            
+      except KeyboardInterrupt:
         colorWipe(strip120, Color(0, 0, 0), 10)
         colorWipe(strip240, Color(0, 0, 0), 10)
-
+          
 print('Cumulonimbus2000 script has ended. Good night !')
