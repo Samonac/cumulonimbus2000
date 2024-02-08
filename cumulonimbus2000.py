@@ -462,7 +462,7 @@ def doubleColorWipe(stripArray, colorArray, wait_ms=50):
             firstBoot = False
             fluidColorTransition(transitionDictArray, wait_ms, 5)
         else:
-            fluidColorTransition(transitionDictArray, 3*wait_ms, 33)
+            fluidColorTransition(transitionDictArray, 2*wait_ms, 33)
         # if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
 
 def fullColor(strip, colorArray=[100,100,100]):
