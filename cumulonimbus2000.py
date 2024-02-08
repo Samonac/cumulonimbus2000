@@ -455,7 +455,7 @@ def doubleColorWipe(stripArray, colorArray, wait_ms=50):
         # strip240.setPixelColor(strip240.numPixels() - i, colorTemp2)
         # strip120.show()
         # strip240.show()
-        fluidColorTransition(transitionDictArray, wait_ms)
+        fluidColorTransition(transitionDictArray, wait_ms, 33)
         # if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
 
 def fullColor(strip, colorArray=[100,100,100]):
@@ -471,7 +471,7 @@ def fullColor(strip, colorArray=[100,100,100]):
     strip.show()
     time.sleep(1)
 
-def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5):
+def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=10):
     # transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {led_num:desired_color}}]
     #print('In fluidColorTransition with transitionDictArray : ', transitionDictArray)
     #print('LED_HISTORY_1 : ', LED_HISTORY_1)
