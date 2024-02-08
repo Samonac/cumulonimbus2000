@@ -849,6 +849,7 @@ if __name__ == '__main__':
               print(' e-3 : Ratp')
               print(' r-4 : FullColor')
               print(' t-5 : SpecificColor')
+              print(' y-6 : Identify Led X,Y positions')
               userModeInput = input('specific mode?\n')
               print('userModeInput = {} of type {}'.format(userModeInput, type(userModeInput)))
             
