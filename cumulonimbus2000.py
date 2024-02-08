@@ -458,6 +458,7 @@ def doubleColorWipe(stripArray, colorArray, wait_ms=50):
         # strip120.show()
         # strip240.show()
         if firstBoot:
+            print('\nFirst boot ! ')
             firstBoot = False
             fluidColorTransition(transitionDictArray, wait_ms, 5)
         else:
@@ -914,7 +915,7 @@ if __name__ == '__main__':
                   # doubleColorWipe([strip240, strip120], [R, G, B, int((R + G + B) / 765), G, 255], 50)  # Random wipe
                   doubleColorWipe([strip240, strip120], [R, G, B, R2, G2, B2], 200)  # Random wipe
                   
-                  doubleColorWipe([strip240, strip120], [R2, G2, B2, R, G, B], 200)  # iNVERSED Random wipe
+                  #doubleColorWipe([strip240, strip120], [R2, G2, B2, R, G, B], 200)  # iNVERSED Random wipe
   
                   #colorWipe(strip120, Color(0, 0, 0), 0)  # Black wipe
                   #colorWipe(strip240, Color(0, 0, 0), 0)  # Black wipe
