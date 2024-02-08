@@ -402,8 +402,8 @@ def doubleColorWipe(stripArray, colorArray, wait_ms=50):
     [strip240, strip120] = stripArray
     [R1, G1, B1, R2, G2, B2] = colorArray
 
-    colorTemp1 = Color(R1, G1, B1)
-    colorTemp2 = Color(R2, G2, B2)
+    colorTemp1 = [R1, G1, B1]
+    colorTemp2 = [R2, G2, B2]
     # inverseColorTemp = Color(255-R, G, B)
     offset = 0
     ratio = 1
@@ -567,7 +567,7 @@ def colorWipe(strip, colorArray, wait_ms=50):
     # OK print('inverse : ', inverse)
     for i in range(strip.numPixels()):
         print('in colorWipe with i : ', i)
-        print('and color : ', color)
+        print('and color : ', colorArray)
         # print('and strip.numPixels() : ', strip.numPixels())
         led_num = i
         if inverse > 0:
@@ -575,7 +575,7 @@ def colorWipe(strip, colorArray, wait_ms=50):
             # print('in colorWipe with strip.numPixels()-i : ', strip.numPixels()-i)
             # if i == strip.numPixels()-1:
             #     strip.setPixelColor(0, color)
-        transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {led_num:color}}]
+        transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {led_num:colorArray}}]
 
         fluidColorTransition(transitionDictArray, wait_ms, transition_steps=5)
         # strip.show()
