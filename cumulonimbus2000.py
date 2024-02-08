@@ -919,8 +919,8 @@ if __name__ == '__main__':
                       # startRatpMode(ratpJson)
   
             except KeyboardInterrupt:
-              colorWipe(strip120, [0, 0, 0], 5)
-              colorWipe(strip240, [0, 0, 0], 5)
+              colorWipe(strip120, [0, 0, 0], 3)
+              colorWipe(strip240, [0, 0, 0], 1)
               
               print(' a-1 / none : Weather')
               print(' z-2 : Colors')
