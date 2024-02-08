@@ -748,9 +748,87 @@ if __name__ == '__main__':
               print('Mode : ', currentMode)
 
               if currentMode == 'identify':
-                identifyLedPosition(strip120, 120)
-                print('\nDone with first strip !\n')
-                identifyLedPosition(strip240, 300)
+                # identifyLedPosition(strip120, 120)
+                # print('\nDone with first strip !\n')
+                # identifyLedPositi,on(strip240, 300)
+                minX = input('min X ?')
+                minX = max(0, int(minX))
+                maxX = input('max X ?')
+                maxX = min(160, int(maxX))
+                minY = input('min Y ?')
+                minY = max(0, int(minY))
+                maxY = input('max Y ?')
+                maxY = min(160, int(maxY))
+                filename = '\data\led_config\strip120.json'
+                with open(filename, "r") as json120file:
+                    jsonFile = json120file.read()
+                    json120 = json.loads(jsonFile)
+                
+                filename = '\data\led_config\strip300.json'
+                with open(filename, "r") as json120file:
+                    jsonFile = json120file.read()
+                    json300 = json.loads(jsonFile)
+                dictJsonConfig = {}
+                for led_1 in json120.keys():
+                    
+                    xTemp = int(json120[led_1]['x'])
+                    yTemp = int(json120[led_1]['y'])
+                    coord_str_temp = '{};{}'.format(xTemp, yTemp)
+                    try:
+                        dictJsonConfig[coord_str_temp]
+                    except KeyError:
+                        dictJsonConfig[coord_str_temp] = {'120':[], '300':[]}
+                    dictJsonConfig[coord_str_temp]['120'].append(led_1)
+                
+                for led_2 in json300.keys():
+                    
+                    xTemp = int(json300[led_2]['x'])
+                    yTemp = int(json300[led_2]['y'])
+                    coord_str_temp = '{};{}'.format(xTemp, yTemp)
+                    try:
+                        dictJsonConfig[coord_str_temp]
+                    except KeyError:
+                        dictJsonConfig[coord_str_temp] = {'120':[], '300':[]}
+                    dictJsonConfig[coord_str_temp]['300'].append(led_2)
+
+                print('dictJsonConfig : ', dictJsonConfig)
+                transitionDictArray = []
+                
+                transitionDictArray.append({"strip": strip120, "ledNum_to_desiredColor": {}})
+                transitionDictArray.append({"strip": strip240, "ledNum_to_desiredColor": {}})
+                for x in range(minX, maxX):
+                    # print('x :', x)
+                    
+                    for y in range(minY, maxY):
+                        # print('y :', y)
+                        
+                        coord_str_temp = '{};{}'.format(x, y)
+                        # try:
+                        try:
+                            dictJsonConfig[coord_str_temp]
+                            
+                            for led_1 in dictJsonConfig[coord_str_temp]['120']:                            
+                                transitionDictArray[0]['ledNum_to_desiredColor'][led_1] = [255, 255, 255]
+                            
+                            for led_2 in dictJsonConfig[coord_str_temp]['300']: 
+                                # transitionDictArray.append({"strip": strip240, "ledNum_to_desiredColor": {led_2 : [255, 255, 255]}})
+                                transitionDictArray[1]['ledNum_to_desiredColor'][led_2] = [255, 255, 255]
+                                
+
+                        except KeyError:
+                            # dictJsonConfig[coord_str_temp] = {'120':[], '300':[]}
+                            print('No leds for coord ', coord_str_temp)
+
+                fluidColorTransition(transitionDictArray, 100, transition_steps=5)
+                time.sleep(10)
+                fullColor(strip120, [0,0,0])
+                fullColor(strip240, [0,0,0])
+
+
+
+                        # transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {led_num:desired_color}}]
+
+
                 print('\n\n\n DONE IDENTIFYING !')
               
               if currentMode == 'specificColor':
