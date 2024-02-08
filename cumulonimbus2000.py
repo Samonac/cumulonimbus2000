@@ -459,7 +459,7 @@ def fullColor(strip, colorArray=[100,100,100]):
 
 def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5):
     # transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {led_num:desired_color}}]
-    
+    print('In fluidColorTransition with transitionDictArray : ', transitionDictArray)
     for transitionDictTemp in transitionDictArray:
         strip = transitionDictTemp['strip']
         print('\n -> dealing with strip')
