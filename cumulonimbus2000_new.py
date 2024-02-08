@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-# Initial Author:
 # NeoPixel library strandtest example
 # Author: Tony DiCola (tony@tonydicola.com)
 #
 # Direct port of the Arduino NeoPixel library strandtest example.  Showcases
 # various animations on a strip of NeoPixels.
-# Code adapted for specific usecase by : Samonac
 
 import time
 from rpi_ws281x import PixelStrip, Color
@@ -212,15 +210,12 @@ LED_PIN_2 = 18  # GPIO pin connected to the pixels (12 uses PWM!).
 # LED_PIN = 10        # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10  # DMA channel to use for generating signal (try 10)
-LED_DMA_1 = 10  # DMA channel to use for generating signal (try 10)
 LED_DMA_2 = 11  # DMA channel to use for generating signal (try 10)
 LED_BRIGHTNESS = 255  # Set to 0 for darkest and 255 for brightest
 LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
 LED_CHANNEL_1 = 1  # set to '1' for GPIOs 13, 19, 41, 45 or 53
 LED_CHANNEL_2 = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
-LED_HISTORY_1 = [[0,0,0]] * LED_COUNT_1
-LED_HISTORY_2 = [[0,0,0]] * LED_COUNT_2
 
 rgbLightDict = {}
 ### https://www.schemecolor.com/sky-weather.php
@@ -438,79 +433,6 @@ def fullColor(strip, colorArray=[100,100,100]):
         time.sleep(10 / 1000.0)
     strip.show()
 
-def fluidColorTransition(strip, led_num, desired_color, total_wait_ms, transition_steps=5):
-    print('in fluidColorTransition(strip, led_num, desired_color) with : ', [strip, led_num, desired_color])
-
-    currentLedColor = []
-    stripNum = 0
-    try:
-        if strip.numPixels() == LED_COUNT_1:
-            currentLedColor = LED_HISTORY_1[led_num]
-            stripNum = 1
-        elif strip.numPixels() == LED_COUNT_2:
-            currentLedColor = LED_HISTORY_2[led_num]
-            stripNum = 2
-        
-        if currentLedColor == []:
-            return IndexError('strip could not be identified')
-    except KeyError as err:
-        print(err)
-        return err
-    
-    print('currentLedColor : ', currentLedColor)
-
-    # identifiy how much of a difference there is between the two colors
-    [R1, G1, B1] = currentLedColor # Example [33, 100, 248]
-    [R2, G2, B2] = desired_color # Example [33, 200, 100]
-    deltaR = R2-R1 # Example 0
-    deltaG = G2-G1 # Example 100
-    deltaB = B2-B1 # Example -148
-    # maxR = abs(deltaR) # Example 0
-    # maxG = abs(deltaG) # Example 100
-    # maxB = abs(deltaB) # Example 148
-    # maxDeltaR = maxR/transition_steps # Example 0
-    # maxDeltaG = maxG/transition_steps # Example 20
-    # maxDeltaB = maxB/transition_steps # Example 29.6 => float ; managed by taking the floor, and making last iteration the final color
-    
-    # deltaRTemp = int(maxDeltaR) # Example 0
-    # deltaGTemp = int(maxDeltaG) # Example 20
-    # deltaBTemp = int(maxDeltaB) # Example 29
-
-    
-
-    # need to do maxDiff delta in 5 steps for a total of 50ms
-    for i in range(1, transition_steps):
-        if i == transition_steps:
-            #print('last step')
-            tempR = R2
-            tempG = G2
-            tempB = B2
-        else:
-            tempR = R1 + i*int(deltaR/transition_steps)
-            tempG = G1 + i*int(deltaG/transition_steps)
-            tempB = B1 + i*int(deltaB/transition_steps)
-        
-        tempColor = [tempR, tempG, tempB]
-        print('tempColor = ', tempColor)
-        
-        strip.setPixelColor(led_num, Color(tempR, tempG, tempB))
-        
-        # save this new color in history
-        if stripNum == 1:
-            LED_HISTORY_1[led_num] = tempColor
-        
-        if stripNum == 2:
-            LED_HISTORY_2[led_num] = tempColor
-        
-        # show color for total_wait_ms/transition_steps
-        
-        # total_wait_ms # Example 50
-        # transition_steps # Example 5
-        strip.show()
-        if (total_wait_ms > 0): time.sleep(total_wait_ms / (transition_steps * 1000.0))
-
-            
-
 def colorWipe(strip, colorArray, wait_ms=50):
     # Define functions which animate LEDs in various ways.
     """Wipe color across display a pixel at a time."""
@@ -520,19 +442,19 @@ def colorWipe(strip, colorArray, wait_ms=50):
     inverse = randrange(2)
 
     # OK print('inverse : ', inverse)
-    for i in range(strip.numPixels()):
-        print('in colorWipe with i : ', i)
-        print('and color : ', color)
+    for i in range(strip.numPixels() + 1):
+        # print('in colorWipe with i : ', i)
+        # print('and color : ', color)
         # print('and strip.numPixels() : ', strip.numPixels())
-        led_num = i
         if inverse > 0:
-            led_num = strip.numPixels() - i
+            strip.setPixelColor(strip.numPixels() - i, color)
             # print('in colorWipe with strip.numPixels()-i : ', strip.numPixels()-i)
             # if i == strip.numPixels()-1:
             #     strip.setPixelColor(0, color)
-        fluidColorTransition(strip, led_num, color, wait_ms, transition_steps=5)
-        # strip.show()
-        # if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
+        else:
+            strip.setPixelColor(i, color)
+        strip.show()
+        if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
 
 
 def theaterChase(strip, color, wait_ms=500, iterations=5):
@@ -665,8 +587,8 @@ if __name__ == '__main__':
                   colorWipe(strip240, [intFullColor,intFullColor,intFullColor])
                   colorWipe(strip120, [intFullColor,intFullColor,intFullColor])
                   time.sleep(3)
-                  colorWipe(strip240, [r_input,g_input,b_input])
-                  colorWipe(strip120, [r_input,g_input,b_input])
+                  colorWipe(strip240, [r_input,g_input,b_input))
+                  colorWipe(strip120, [r_input,g_input,b_input))
                   time.sleep(3)
                   colorWipe(strip240, [intFullColor,intFullColor,intFullColor])
                   colorWipe(strip120, [intFullColor,intFullColor,intFullColor])
