@@ -219,8 +219,8 @@ LED_INVERT = False  # True to invert the signal (when using NPN transistor level
 LED_CHANNEL = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
 LED_CHANNEL_1 = 1  # set to '1' for GPIOs 13, 19, 41, 45 or 53
 LED_CHANNEL_2 = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
-LED_HISTORY_1 = [[0,0,0]] * LED_COUNT_1
-LED_HISTORY_2 = [[0,0,0]] * LED_COUNT_2
+LED_HISTORY_1 = [[0,0,0]] * (LED_COUNT_1 + 1)
+LED_HISTORY_2 = [[0,0,0]] * (LED_COUNT_2 + 1)
 
 rgbLightDict = {}
 ### https://www.schemecolor.com/sky-weather.php
@@ -465,7 +465,7 @@ def fullColor(strip, colorArray=[100,100,100]):
     inverse=0
     # OK print('inverse : ', inverse)
     for i in range(strip.numPixels() + 1):
-        print('in colorWipe with i : ', i)
+        print('in fullColor with i : ', i)
         print('and color : ', color)
         print('and strip.numPixels() : ', strip.numPixels())
         if inverse > 0:
