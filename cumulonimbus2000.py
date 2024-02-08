@@ -425,24 +425,26 @@ def doubleColorWipe(stripArray, colorArray, wait_ms=50):
         j += 1
         
         if inverse > 0:
-            transitionDictArray = [{"strip":strip120, "ledNum_to_desiredColor": {i:colorTemp1}}]
+            transitionDictArray = [{"strip":strip120, "ledNum_to_desiredColor": {int(i):colorTemp1}}]
         else:
-            transitionDictArray = [{"strip":strip120, "ledNum_to_desiredColor": {strip120.numPixels()-i:colorTemp1}}]
+            transitionDictArray = [{"strip":strip120, "ledNum_to_desiredColor": {int(strip120.numPixels()-i):colorTemp1}}]
         
         if inverse2 > 0:
             if '.' in '{}'.format(i*ratio):
-                transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": {j:colorTemp2, strip240.numPixels()-j: colorTemp2}})
+                transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": {int(j):colorTemp2, int(strip240.numPixels()-j): colorTemp2}})
             else:
-                transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": {j:colorTemp2, j+1: colorTemp2, strip240.numPixels()-j: colorTemp2, strip240.numPixels()-j-1: colorTemp2}})
+                transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": 
+                                            {int(j):colorTemp2, int(j+1): colorTemp2, 
+                                             int(strip240.numPixels()-j): colorTemp2, int(strip240.numPixels()-j-1): colorTemp2}})
                 j += 1
         else:
             if '.' in '{}'.format(i*ratio):
                 transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": 
-                                            {strip240.numPixels()/2+j:colorTemp2, strip240.numPixels()/2-j: colorTemp2}})
+                                            {int(strip240.numPixels()/2+j):colorTemp2, int(strip240.numPixels()/2-j): colorTemp2}})
             else:
                 transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": 
-                                            {strip240.numPixels()/2+j:colorTemp2, strip240.numPixels()/2+j+1: colorTemp2, 
-                                             strip240.numPixels()/2-j: colorTemp2, strip240.numPixels()/2-j-1: colorTemp2}})
+                                            {int(strip240.numPixels()/2+j):colorTemp2, int(strip240.numPixels()/2+j+1): colorTemp2, 
+                                             int(strip240.numPixels()/2-j): colorTemp2, int(strip240.numPixels()/2-j-1): colorTemp2}})
                 j += 1
 
         # strip120.setPixelColor(i, colorTemp1)
@@ -485,15 +487,18 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5)
         # print('\n -> dealing with strip')
         transitionDictTemp['temp_led_array'] = {}
         for led_num in transitionDictTemp['ledNum_to_desiredColor'].keys():
+            if type(led_num) != int:
+                print('1. led_num of type ', type(led_num), 'will be cast to int : ', int(led_num))
+                led_num = int(led_num)
             desired_color = transitionDictTemp['ledNum_to_desiredColor'][led_num]
             currentLedColor = []
             stripNum = 0
             try:
                 if strip.numPixels() == LED_COUNT_1:
-                    currentLedColor = LED_HISTORY_1[led_num]
+                    currentLedColor = LED_HISTORY_1[int(led_num)]
                     stripNum = 1
                 elif strip.numPixels() == LED_COUNT_2:
-                    currentLedColor = LED_HISTORY_2[led_num]
+                    currentLedColor = LED_HISTORY_2[int(led_num)]
                     stripNum = 2
                 if currentLedColor == []:
                     return IndexError('strip could not be identified')
@@ -554,6 +559,10 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5)
                 stripNum = 2
             # print('doing strip ', stripNum)
             for led_num in transitionDictTemp['temp_led_array'].keys():
+                
+                if type(led_num) != int:
+                    print('2. led_num of type ', type(led_num), 'will be cast to int : ', int(led_num))
+                    led_num = int(led_num)
                 desired_color_Array = transitionDictTemp['temp_led_array'][led_num]
                 current_desired_color = desired_color_Array[i]
                 # print('led_num ', led_num, ' needs to go to desired_color : ', current_desired_color)
@@ -584,7 +593,6 @@ def colorWipe(strip, colorArray, wait_ms=50):
     # Define functions which animate LEDs in various ways.
     """Wipe color across display a pixel at a time."""
     [R, G, B] = colorArray
-    color = Color(R, G, B)
     
     inverse = randrange(2)
 
@@ -599,7 +607,7 @@ def colorWipe(strip, colorArray, wait_ms=50):
             # print('in colorWipe with strip.numPixels()-i : ', strip.numPixels()-i)
             # if i == strip.numPixels()-1:
             #     strip.setPixelColor(0, color)
-        transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {led_num:colorArray}}]
+        transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {int(led_num):colorArray}}]
 
         fluidColorTransition(transitionDictArray, wait_ms, transition_steps=5)
         # strip.show()
