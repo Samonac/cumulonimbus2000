@@ -717,6 +717,7 @@ if __name__ == '__main__':
     while True: 
       try:
         print('relaunchIndex =', relaunchIndex)
+        inverseI = True
         relaunchIndex+=1  
         if relaunchIndex < 100:
           while True:
@@ -793,7 +794,7 @@ if __name__ == '__main__':
                 maxY = 40
                 minRangeI = 0
                 maxRangeI = 16
-                inverseI = True
+                inverseI = not inverseI
                 stepI = 1
                 if inverseI:
                     minRangeI=maxRangeI
