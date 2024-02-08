@@ -791,9 +791,18 @@ if __name__ == '__main__':
                 transitionDictArray.append({"strip": strip240, "ledNum_to_desiredColor": {}})
                 
                 maxY = 40
-                for i in range(0, 16):
+                minRangeI = 0
+                maxRangeI = 16
+                inverseI = True
+                stepI = 1
+                if inverseI:
+                    minRangeI=maxRangeI
+                    maxRangeI=0
+                    stepI = -1
+
+                for i in range(minRangeI, maxRangeI, stepI):
                     minX = 10*i
-                    maxX = min(160, minX + 10)
+                    maxX = min(160, minX + int(10*stepI))
                     # for j in range(0, 3):
                     # minY = 10*j
                     # maxY = min(40, minY + 10)
