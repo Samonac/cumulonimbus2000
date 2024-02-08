@@ -703,7 +703,7 @@ if __name__ == '__main__':
 
     # todo : remove
     
-    currentMode = 'colors' # skipFirst 
+    currentMode = '' # skipFirst 
     userModeInput = 'temp'
      
     if currentMode == '':
@@ -758,13 +758,13 @@ if __name__ == '__main__':
                 minY = input('min Y ?\n')
                 minY = max(0, int(minY))
                 maxY = input('max Y ?\n')
-                maxY = min(160, int(maxY))
-                filename = '/data/led_config/strip120.json'
+                maxY = min(40, int(maxY))
+                filename = 'data/led_config/strip120.json'
                 with open(filename, "r") as json120file:
                     jsonFile = json120file.read()
                     json120 = json.loads(jsonFile)
                 
-                filename = '/data/led_config/strip300.json'
+                filename = 'data/led_config/strip300.json'
                 with open(filename, "r") as json120file:
                     jsonFile = json120file.read()
                     json300 = json.loads(jsonFile)
