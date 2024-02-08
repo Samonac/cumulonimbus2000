@@ -465,17 +465,11 @@ def fullColor(strip, colorArray=[100,100,100]):
     inverse=0
     # OK print('inverse : ', inverse)
     for i in range(strip.numPixels() + 1):
-        print('in fullColor with i : ', i)
-        print('and color : ', color)
-        print('and strip.numPixels() : ', strip.numPixels())
-        if inverse > 0:
-            strip.setPixelColor(strip.numPixels() - i, color)
-            # print('in colorWipe with strip.numPixels()-i : ', strip.numPixels()-i)
-            # if i == strip.numPixels()-1:
-            #     strip.setPixelColor(0, color)
-        else:
-            strip.setPixelColor(i, color)
+        #print('in fullColor with i : ', i)
+        #print('and color : ', color)
+        strip.setPixelColor(i, color)
     strip.show()
+    time.sleep(1)
 
 def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5):
     # transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {led_num:desired_color}}]
@@ -824,8 +818,9 @@ if __name__ == '__main__':
 
                                 except KeyError:
                                     # dictJsonConfig[coord_str_temp] = {'120':[], '300':[]}
-                                    print('No leds for coord ', coord_str_temp)
+                                    # print('No leds for coord ', coord_str_temp)
                                     #print(dictJsonConfig.keys())
+                                    continue
 
                         fluidColorTransition(transitionDictArray, 100, transition_steps=5)
                         time.sleep(10)
