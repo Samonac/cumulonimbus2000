@@ -720,7 +720,6 @@ if __name__ == '__main__':
         relaunchIndex+=1  
         if relaunchIndex < 100:
           while True:
-          
             print('userModeInput = {} of type {}'.format(userModeInput, type(userModeInput)))
             try:  
               if userModeInput in [1, '1', '&', 'a', 'A']:
@@ -828,8 +827,8 @@ if __name__ == '__main__':
 
                     fluidColorTransition(transitionDictArray, 100, transition_steps=5)
                     time.sleep(3)
-                    fullColor(strip120, [0,0,0])
-                    fullColor(strip240, [0,0,0])
+                fullColor(strip120, [0,0,0])
+                fullColor(strip240, [0,0,0])
                     #time.sleep(1)
 
 
@@ -838,7 +837,7 @@ if __name__ == '__main__':
 
                 print('\n\n\n DONE IDENTIFYING !')
               
-              if currentMode == 'specificColor':
+              elif currentMode == 'specificColor':
               
                   intFullColor = input('White intensity (to test yellowing due to lack of power) [1-255]: ')
                   intFullColor = int(intFullColor.strip(string.ascii_letters))
@@ -861,7 +860,7 @@ if __name__ == '__main__':
                   fullColor(strip120)
                   fullColor(strip240)
                   
-              if currentMode == 'fullColor':
+              elif currentMode == 'fullColor':
                   time.sleep(3)
                   colorWipe(strip240, [intFullColor,intFullColor,intFullColor])
                   colorWipe(strip120, [intFullColor,intFullColor,intFullColor])
@@ -869,8 +868,8 @@ if __name__ == '__main__':
                   
                   fullColor(strip120)
                   fullColor(strip240)
-                  
-              if currentMode == 'colors':
+
+              elif currentMode == 'colors':
               
                   #print('Boot : Color wipe animations.')
   
@@ -896,7 +895,6 @@ if __name__ == '__main__':
                   #colorWipe(strip240, Color(0, 0, 0), 0)  # Black wipe
   
               else:
-  
                   if os.name == 'nt':
                       asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
   
