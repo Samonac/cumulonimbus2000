@@ -816,6 +816,8 @@ if __name__ == '__main__':
                         temp = minY
                         minY = maxY
                         maxY = temp
+                        print('(actual) Zone to light up : ({}, {}) ({}, {})'.format(minX, minY, maxX, maxY))
+                    
                     for x in range(minX, maxX+1):
                         # print('x :', x)
                         
