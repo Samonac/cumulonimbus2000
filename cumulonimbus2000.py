@@ -497,7 +497,7 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5)
                     stripNum = 2
                 if currentLedColor == []:
                     return IndexError('strip could not be identified')
-            except KeyError as err:
+            except IndexError as err:
                 print(err)
                 print('led_num : ', led_num)
                 print('strip.numPixels() : ', strip.numPixels())
