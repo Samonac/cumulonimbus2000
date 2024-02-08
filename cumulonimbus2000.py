@@ -487,9 +487,9 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5)
         # print('\n -> dealing with strip')
         transitionDictTemp['temp_led_array'] = {}
         for led_num in transitionDictTemp['ledNum_to_desiredColor'].keys():
-            if type(led_num) != int:
-                print('1. led_num of type ', type(led_num), 'will be cast to int : ', int(led_num))
-                led_num = int(led_num)
+            # if type(led_num) != int:
+            #     print('1. led_num of type ', type(led_num), 'will be cast to int : ', int(led_num))
+            #     led_num = int(led_num)
             desired_color = transitionDictTemp['ledNum_to_desiredColor'][led_num]
             currentLedColor = []
             stripNum = 0
@@ -560,21 +560,21 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5)
             # print('doing strip ', stripNum)
             for led_num in transitionDictTemp['temp_led_array'].keys():
                 
-                if type(led_num) != int:
-                    print('2. led_num of type ', type(led_num), 'will be cast to int : ', int(led_num))
-                    led_num = int(led_num)
+                # if type(led_num) != int:
+                #     print('2. led_num of type ', type(led_num), 'will be cast to int : ', int(led_num))
+                #     led_num = int(led_num)
                 desired_color_Array = transitionDictTemp['temp_led_array'][led_num]
                 current_desired_color = desired_color_Array[i]
                 # print('led_num ', led_num, ' needs to go to desired_color : ', current_desired_color)
                 [tempR, tempG, tempB] = current_desired_color
-                strip.setPixelColor(led_num, Color(tempR, tempG, tempB))
+                strip.setPixelColor(int(led_num), Color(tempR, tempG, tempB))
                 
                 # save this new color in history
                 if stripNum == 1:
-                    LED_HISTORY_1[led_num] = current_desired_color
+                    LED_HISTORY_1[int(led_num)] = current_desired_color
                 
                 if stripNum == 2:
-                    LED_HISTORY_2[led_num] = current_desired_color
+                    LED_HISTORY_2[int(led_num)] = current_desired_color
                 
                 # show color for total_wait_ms/transition_steps
                 
