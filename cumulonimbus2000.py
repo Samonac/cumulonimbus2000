@@ -453,8 +453,6 @@ def fullColor(strip, colorArray=[100,100,100]):
             #     strip.setPixelColor(0, color)
         else:
             strip.setPixelColor(i, color)
-        
-        time.sleep(10 / 1000.0)
     strip.show()
 
 def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5):
@@ -566,8 +564,8 @@ def colorWipe(strip, colorArray, wait_ms=50):
 
     # OK print('inverse : ', inverse)
     for i in range(strip.numPixels()):
-        print('in colorWipe with i : ', i)
-        print('and color : ', colorArray)
+        # print('in colorWipe with i : ', i)
+        # print('and color : ', colorArray)
         # print('and strip.numPixels() : ', strip.numPixels())
         led_num = i
         if inverse > 0:
