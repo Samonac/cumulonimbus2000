@@ -668,6 +668,21 @@ def theaterChaseRainbow(strip, wait_ms=100):
             for i in range(0, strip.numPixels(), 3):
                 strip.setPixelColor(i + q, 0)
 
+def identifyLedPosition(strip, stripNum):
+    print('StripNum : ', stripNum)
+    stripDict = {}
+
+    for i in range(0, strip.numPixels()+1):
+        strip.setPixelColor(i, Color(255, 255, 255))
+        if i > 0:        
+            strip.setPixelColor(i-1, Color(0, 0, 0))
+        strip.show()
+        print('Led ', i)
+        xInput = input('X : ')
+        yInput = input('Y : ')
+        print(xInput, ', ', yInput)
+        stripDict[i] = {'x':xInput, 'y':yInput}
+        print('stripDict : ', stripDict) 
 
 # Main program logic follows:
 if __name__ == '__main__':
@@ -697,6 +712,7 @@ if __name__ == '__main__':
       print(' e-3 : Ratp')
       print(' r-4 : FullColor')
       print(' t-5 : SpecificColor')
+      print(' y-6 : Identify Led X,Y positions')
       userModeInput = input('specific mode?\n')
       print('userModeInput = {} of type {}'.format(userModeInput, type(userModeInput)))
       
@@ -726,8 +742,16 @@ if __name__ == '__main__':
                   currentMode = 'fullColor'
               if userModeInput in [5, '5', '(', 't', 'T']:
                   currentMode = 'specificColor'
+              if userModeInput in [6, '6', '-', 'y', 'Y']:
+                  currentMode = 'identify'
                   
               print('Mode : ', currentMode)
+
+              if currentMode == 'identify':
+                identifyLedPosition(strip120)
+                print('\nDone with first strip !\n')
+                identifyLedPosition(strip240)
+                print('\n\n\n DONE IDENTIFYING !')
               
               if currentMode == 'specificColor':
               
