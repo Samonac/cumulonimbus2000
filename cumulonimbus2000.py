@@ -415,15 +415,35 @@ def doubleColorWipe(stripArray, colorArray, wait_ms=50):
         ratio = strip120.numPixels()/strip240.numPixels()
     
     j = 0
+       
+    inverse = randrange(2)
+    inverse2 = randrange(2)
+
+
     for i in range(strip120.numPixels()):
 
         j += 1
-        transitionDictArray = [{"strip":strip120, "ledNum_to_desiredColor": {i:colorTemp1}}]
-        if '.' in '{}'.format(i*ratio):
-            transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": {j:colorTemp2, strip240.numPixels()-j: colorTemp2}})
+        
+        if inverse > 0:
+            transitionDictArray = [{"strip":strip120, "ledNum_to_desiredColor": {i:colorTemp1}}]
         else:
-            transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": {j:colorTemp2, j+1: colorTemp2, strip240.numPixels()-j: colorTemp2, strip240.numPixels()-j-1: colorTemp2}})
-            j += 1
+            transitionDictArray = [{"strip":strip120, "ledNum_to_desiredColor": {strip120.numPixels()-i:colorTemp1}}]
+        
+        if inverse2 > 0:
+            if '.' in '{}'.format(i*ratio):
+                transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": {j:colorTemp2, strip240.numPixels()-j: colorTemp2}})
+            else:
+                transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": {j:colorTemp2, j+1: colorTemp2, strip240.numPixels()-j: colorTemp2, strip240.numPixels()-j-1: colorTemp2}})
+                j += 1
+        else:
+            if '.' in '{}'.format(i*ratio):
+                transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": 
+                                            {strip240.numPixels()/2+j:colorTemp2, strip240.numPixels()/2-j: colorTemp2}})
+            else:
+                transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": 
+                                            {strip240.numPixels()/2+j:colorTemp2, strip240.numPixels()/2+j+1: colorTemp2, 
+                                             strip240.numPixels()/2-j: colorTemp2, strip240.numPixels()/2-j-1: colorTemp2}})
+                j += 1
 
         # strip120.setPixelColor(i, colorTemp1)
         # # print('in colorWipe with i : ', i)
