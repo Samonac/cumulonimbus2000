@@ -400,6 +400,7 @@ def glow(stripArray, colorArray, wait_ms=1000, percent=5, loop=100):
 
 
 def doubleColorWipe(stripArray, colorArray, wait_ms=50):
+    global firstBoot
     [strip240, strip120] = stripArray
     [R1, G1, B1, R2, G2, B2] = colorArray
 
