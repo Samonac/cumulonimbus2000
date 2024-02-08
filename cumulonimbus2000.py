@@ -826,11 +826,11 @@ if __name__ == '__main__':
                                 #print(dictJsonConfig.keys())
                                 continue
 
-                        fluidColorTransition(transitionDictArray, 100, transition_steps=5)
-                        time.sleep(3)
-                        fullColor(strip120, [0,0,0])
-                        fullColor(strip240, [0,0,0])
-                        #time.sleep(1)
+                    fluidColorTransition(transitionDictArray, 100, transition_steps=5)
+                    time.sleep(3)
+                    fullColor(strip120, [0,0,0])
+                    fullColor(strip240, [0,0,0])
+                    #time.sleep(1)
 
 
 
