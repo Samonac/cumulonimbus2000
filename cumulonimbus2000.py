@@ -748,9 +748,9 @@ if __name__ == '__main__':
               print('Mode : ', currentMode)
 
               if currentMode == 'identify':
-                identifyLedPosition(strip120)
+                identifyLedPosition(strip120, 120)
                 print('\nDone with first strip !\n')
-                identifyLedPosition(strip240)
+                identifyLedPosition(strip240, 300)
                 print('\n\n\n DONE IDENTIFYING !')
               
               if currentMode == 'specificColor':
@@ -841,8 +841,8 @@ if __name__ == '__main__':
                       # startRatpMode(ratpJson)
   
             except KeyboardInterrupt:
-              colorWipe(strip120, [1, 1, 1], 5)
-              colorWipe(strip240, [1, 1, 1], 2)
+              colorWipe(strip120, [0, 0, 0], 5)
+              colorWipe(strip240, [0, 0, 0], 5)
               
               print(' a-1 / none : Weather')
               print(' z-2 : Colors')
@@ -854,7 +854,7 @@ if __name__ == '__main__':
               print('userModeInput = {} of type {}'.format(userModeInput, type(userModeInput)))
             
       except KeyboardInterrupt:
-        colorWipe(strip120, [0, 0, 0], 10)
-        colorWipe(strip240, [0, 0, 0], 10)
+        fullColor(strip120, [0, 0, 0])
+        fullColor(strip240, [0, 0, 0])
           
 print('Cumulonimbus2000 script has ended. Good night !')
