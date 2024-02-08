@@ -796,10 +796,10 @@ if __name__ == '__main__':
                 
                 transitionDictArray.append({"strip": strip120, "ledNum_to_desiredColor": {}})
                 transitionDictArray.append({"strip": strip240, "ledNum_to_desiredColor": {}})
-                for x in range(minX, maxX):
+                for x in range(minX, maxX+1):
                     # print('x :', x)
                     
-                    for y in range(minY, maxY):
+                    for y in range(minY, maxY+1):
                         # print('y :', y)
                         
                         coord_str_temp = '{};{}'.format(x, y)
@@ -818,6 +818,7 @@ if __name__ == '__main__':
                         except KeyError:
                             # dictJsonConfig[coord_str_temp] = {'120':[], '300':[]}
                             print('No leds for coord ', coord_str_temp)
+                            print(dictJsonConfig.keys())
 
                 fluidColorTransition(transitionDictArray, 100, transition_steps=5)
                 time.sleep(10)
