@@ -785,7 +785,7 @@ if __name__ == '__main__':
                         dictJsonConfig[coord_str_temp] = {'120':[], '300':[]}
                     dictJsonConfig[coord_str_temp]['300'].append(led_2)
 
-                print('dictJsonConfig : ', dictJsonConfig)
+                #print('dictJsonConfig : ', dictJsonConfig)
                 transitionDictArray = []
                 
                 transitionDictArray.append({"strip": strip120, "ledNum_to_desiredColor": {}})
@@ -797,9 +797,9 @@ if __name__ == '__main__':
                     maxX = min(160, minX + 10)
                     # for j in range(0, 3):
                     # minY = 10*j
+                    # maxY = min(40, minY + 10)
                     minY = 0
                     maxY = 40
-                    maxY = min(40, minY + 10)
                     print('Zone to light up : ({}, {}) ({}, {})'.format(minX, minY, maxX, maxY))
                     for x in range(minX, maxX+1):
                         # print('x :', x)
