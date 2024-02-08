@@ -790,12 +790,14 @@ if __name__ == '__main__':
                 
                 transitionDictArray.append({"strip": strip120, "ledNum_to_desiredColor": {}})
                 transitionDictArray.append({"strip": strip240, "ledNum_to_desiredColor": {}})
-                maxX = 160
+                
                 maxY = 40
-                for i in range(0, 17):
+                for i in range(0, 16):
                     minX = 10*i
-                    for j in range(0, 4):
+                    maxX = min(160, minX + 10)
+                    for j in range(0, 3):
                         minY = 10*j
+                        maxY = min(40, minY + 10)
                         print('Zone to light up : ({}, {}) ({}, {})'.format(minX, minY, maxX, maxY))
                         for x in range(minX, maxX+1):
                             # print('x :', x)
