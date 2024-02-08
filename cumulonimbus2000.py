@@ -477,7 +477,9 @@ def fullColor(strip, colorArray=[100,100,100]):
 
 def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5):
     # transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {led_num:desired_color}}]
-    # print('In fluidColorTransition with transitionDictArray : ', transitionDictArray)
+    print('In fluidColorTransition with transitionDictArray : ', transitionDictArray)
+    print('LED_HISTORY_1 : ', LED_HISTORY_1)
+    print('LED_HISTORY_2 : ', LED_HISTORY_2)
     for transitionDictTemp in transitionDictArray:
         strip = transitionDictTemp['strip']
         # print('\n -> dealing with strip')
@@ -493,11 +495,12 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5)
                 elif strip.numPixels() == LED_COUNT_2:
                     currentLedColor = LED_HISTORY_2[led_num]
                     stripNum = 2
-                
                 if currentLedColor == []:
                     return IndexError('strip could not be identified')
             except KeyError as err:
                 print(err)
+                print('led_num : ', led_num)
+                print('strip.numPixels() : ', strip.numPixels())
                 return err
             # print('in fluidColorTransition(stripNum, led_num, desired_color) with : ', [stripNum, led_num, desired_color])
     
