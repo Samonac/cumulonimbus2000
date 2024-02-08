@@ -795,34 +795,36 @@ if __name__ == '__main__':
                 for i in range(0, 16):
                     minX = 10*i
                     maxX = min(160, minX + 10)
-                    for j in range(0, 3):
-                        minY = 10*j
-                        maxY = min(40, minY + 10)
-                        print('Zone to light up : ({}, {}) ({}, {})'.format(minX, minY, maxX, maxY))
-                        for x in range(minX, maxX+1):
-                            # print('x :', x)
+                    # for j in range(0, 3):
+                    # minY = 10*j
+                    minY = 0
+                    maxY = 40
+                    maxY = min(40, minY + 10)
+                    print('Zone to light up : ({}, {}) ({}, {})'.format(minX, minY, maxX, maxY))
+                    for x in range(minX, maxX+1):
+                        # print('x :', x)
+                        
+                        for y in range(minY, maxY+1):
+                            # print('y :', y)
                             
-                            for y in range(minY, maxY+1):
-                                # print('y :', y)
+                            coord_str_temp = '{};{}'.format(x, y)
+                            # try:
+                            try:
+                                dictJsonConfig[coord_str_temp]
                                 
-                                coord_str_temp = '{};{}'.format(x, y)
-                                # try:
-                                try:
-                                    dictJsonConfig[coord_str_temp]
+                                for led_1 in dictJsonConfig[coord_str_temp]['120']:                            
+                                    transitionDictArray[0]['ledNum_to_desiredColor'][led_1] = [255, 255, 255]
+                                
+                                for led_2 in dictJsonConfig[coord_str_temp]['300']: 
+                                    # transitionDictArray.append({"strip": strip240, "ledNum_to_desiredColor": {led_2 : [255, 255, 255]}})
+                                    transitionDictArray[1]['ledNum_to_desiredColor'][led_2] = [255, 255, 255]
                                     
-                                    for led_1 in dictJsonConfig[coord_str_temp]['120']:                            
-                                        transitionDictArray[0]['ledNum_to_desiredColor'][led_1] = [255, 255, 255]
-                                    
-                                    for led_2 in dictJsonConfig[coord_str_temp]['300']: 
-                                        # transitionDictArray.append({"strip": strip240, "ledNum_to_desiredColor": {led_2 : [255, 255, 255]}})
-                                        transitionDictArray[1]['ledNum_to_desiredColor'][led_2] = [255, 255, 255]
-                                        
 
-                                except KeyError:
-                                    # dictJsonConfig[coord_str_temp] = {'120':[], '300':[]}
-                                    # print('No leds for coord ', coord_str_temp)
-                                    #print(dictJsonConfig.keys())
-                                    continue
+                            except KeyError:
+                                # dictJsonConfig[coord_str_temp] = {'120':[], '300':[]}
+                                # print('No leds for coord ', coord_str_temp)
+                                #print(dictJsonConfig.keys())
+                                continue
 
                         fluidColorTransition(transitionDictArray, 100, transition_steps=5)
                         time.sleep(3)
