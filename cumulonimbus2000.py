@@ -549,7 +549,10 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5)
                 # total_wait_ms # Example 50
                 # transition_steps # Example 5
         # print('showing and sleeping for ', total_wait_ms / (transition_steps * 1000.0))
-        strip.show()
+        
+        for transitionDictTemp in transitionDictArray:
+            strip = transitionDictTemp['strip']
+            strip.show()
         if (total_wait_ms > 0): time.sleep(total_wait_ms / (transition_steps * 1000.0))
 
             
