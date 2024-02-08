@@ -222,6 +222,7 @@ LED_CHANNEL_2 = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
 LED_HISTORY_1 = [[0,0,0]] * (LED_COUNT_1 + 1)
 LED_HISTORY_2 = [[0,0,0]] * (LED_COUNT_2 + 1)
 
+firstBoot = True
 rgbLightDict = {}
 ### https://www.schemecolor.com/sky-weather.php
 # VIVID CERULEAN
@@ -455,7 +456,11 @@ def doubleColorWipe(stripArray, colorArray, wait_ms=50):
         # strip240.setPixelColor(strip240.numPixels() - i, colorTemp2)
         # strip120.show()
         # strip240.show()
-        fluidColorTransition(transitionDictArray, 3*wait_ms, 33)
+        if firstBoot:
+            firstBoot = False
+            fluidColorTransition(transitionDictArray, wait_ms, 5)
+        else:
+            fluidColorTransition(transitionDictArray, 3*wait_ms, 33)
         # if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
 
 def fullColor(strip, colorArray=[100,100,100]):
