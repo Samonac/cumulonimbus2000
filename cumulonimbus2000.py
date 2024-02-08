@@ -405,17 +405,36 @@ def doubleColorWipe(stripArray, colorArray, wait_ms=50):
     colorTemp1 = Color(R1, G1, B1)
     colorTemp2 = Color(R2, G2, B2)
     # inverseColorTemp = Color(255-R, G, B)
+    offset = 0
+    ratio = 1
+    if strip240.numPixels() >= strip120.numPixels():
+        offset = strip240.numPixels() - 2*strip120.numPixels() # 60
+        ratio = strip240.numPixels()/(2*strip120.numPixels()) # 300/240 = 1.25
+    else:
+        offset = strip120.numPixels() - strip240.numPixels()
+        ratio = strip120.numPixels()/strip240.numPixels()
+    
+    j = 0
     for i in range(strip120.numPixels()):
 
-        strip120.setPixelColor(i, colorTemp1)
-        # print('in colorWipe with i : ', i)
-        # print('and color : ', color)
-        # print('and strip.numPixels() : ', strip.numPixels())
-        strip240.setPixelColor(i, colorTemp2)
-        strip240.setPixelColor(strip240.numPixels() - i, colorTemp2)
-        strip120.show()
-        strip240.show()
-        if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
+        j += 1
+        transitionDictArray = [{"strip":strip120, "ledNum_to_desiredColor": {i:colorTemp1}}]
+        if '.' in '{}'.format(i*ratio):
+            transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": {j:colorTemp2, strip240.numPixels()-j: colorTemp2}})
+        else:
+            transitionDictArray.append({"strip":strip240, "ledNum_to_desiredColor": {j:colorTemp2, j+1: colorTemp2, strip240.numPixels()-j: colorTemp2, strip240.numPixels()-j-1: colorTemp2}})
+            j += 1
+
+        # strip120.setPixelColor(i, colorTemp1)
+        # # print('in colorWipe with i : ', i)
+        # # print('and color : ', color)
+        # # print('and strip.numPixels() : ', strip.numPixels())
+        # strip240.setPixelColor(i, colorTemp2)
+        # strip240.setPixelColor(strip240.numPixels() - i, colorTemp2)
+        # strip120.show()
+        # strip240.show()
+        fluidColorTransition(transitionDictArray, wait_ms)
+        # if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
 
 def fullColor(strip, colorArray=[100,100,100]):
 
@@ -438,74 +457,100 @@ def fullColor(strip, colorArray=[100,100,100]):
         time.sleep(10 / 1000.0)
     strip.show()
 
-def fluidColorTransition(strip, led_num, desired_color, total_wait_ms, transition_steps=5):
-    print('in fluidColorTransition(strip, led_num, desired_color) with : ', [strip, led_num, desired_color])
-
-    currentLedColor = []
-    stripNum = 0
-    try:
-        if strip.numPixels() == LED_COUNT_1:
-            currentLedColor = LED_HISTORY_1[led_num]
-            stripNum = 1
-        elif strip.numPixels() == LED_COUNT_2:
-            currentLedColor = LED_HISTORY_2[led_num]
-            stripNum = 2
-        
-        if currentLedColor == []:
-            return IndexError('strip could not be identified')
-    except KeyError as err:
-        print(err)
-        return err
+def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=5):
+    # transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {led_num:desired_color}}]
     
-    print('currentLedColor : ', currentLedColor)
-
-    # identifiy how much of a difference there is between the two colors
-    [R1, G1, B1] = currentLedColor # Example [33, 100, 248]
-    [R2, G2, B2] = desired_color # Example [33, 200, 100]
-    deltaR = R2-R1 # Example 0
-    deltaG = G2-G1 # Example 100
-    deltaB = B2-B1 # Example -148
-    # maxR = abs(deltaR) # Example 0
-    # maxG = abs(deltaG) # Example 100
-    # maxB = abs(deltaB) # Example 148
-    # maxDeltaR = maxR/transition_steps # Example 0
-    # maxDeltaG = maxG/transition_steps # Example 20
-    # maxDeltaB = maxB/transition_steps # Example 29.6 => float ; managed by taking the floor, and making last iteration the final color
+    for transitionDictTemp in transitionDictArray:
+        strip = transitionDictTemp['strip']
+        print('\n -> dealing with strip')
+        transitionDictTemp['temp_led_array'] = {}
+        for led_num in transitionDictTemp['ledNum_to_desiredColor'].keys():
+            desired_color = transitionDictTemp['ledNum_to_desiredColor'][led_num]
+            currentLedColor = []
+            stripNum = 0
+            try:
+                if strip.numPixels() == LED_COUNT_1:
+                    currentLedColor = LED_HISTORY_1[led_num]
+                    stripNum = 1
+                elif strip.numPixels() == LED_COUNT_2:
+                    currentLedColor = LED_HISTORY_2[led_num]
+                    stripNum = 2
+                
+                if currentLedColor == []:
+                    return IndexError('strip could not be identified')
+            except KeyError as err:
+                print(err)
+                return err
+            print('in fluidColorTransition(stripNum, led_num, desired_color) with : ', [stripNum, led_num, desired_color])
     
-    # deltaRTemp = int(maxDeltaR) # Example 0
-    # deltaGTemp = int(maxDeltaG) # Example 20
-    # deltaBTemp = int(maxDeltaB) # Example 29
+            print('currentLedColor : ', currentLedColor)
 
-    
+            # identifiy how much of a difference there is between the two colors
+            [R1, G1, B1] = currentLedColor # Example [33, 100, 248]
+            [R2, G2, B2] = desired_color # Example [33, 200, 100]
+            deltaR = R2-R1 # Example 0
+            deltaG = G2-G1 # Example 100
+            deltaB = B2-B1 # Example -148
+            # maxR = abs(deltaR) # Example 0
+            # maxG = abs(deltaG) # Example 100
+            # maxB = abs(deltaB) # Example 148
+            # maxDeltaR = maxR/transition_steps # Example 0
+            # maxDeltaG = maxG/transition_steps # Example 20
+            # maxDeltaB = maxB/transition_steps # Example 29.6 => float ; managed by taking the floor, and making last iteration the final color
+            
+            # deltaRTemp = int(maxDeltaR) # Example 0
+            # deltaGTemp = int(maxDeltaG) # Example 20
+            # deltaBTemp = int(maxDeltaB) # Example 29
 
-    # need to do maxDiff delta in 5 steps for a total of 50ms
+            
+            
+            transitionDictTemp['temp_led_array'][led_num] = []
+            # need to do maxDiff delta in 5 steps for a total of 50ms
+            for i in range(1, transition_steps):
+                if i == transition_steps:
+                    #print('last step')
+                    tempR = R2
+                    tempG = G2
+                    tempB = B2
+                else:
+                    tempR = R1 + i*int(deltaR/transition_steps)
+                    tempG = G1 + i*int(deltaG/transition_steps)
+                    tempB = B1 + i*int(deltaB/transition_steps)
+                
+                tempColor = [tempR, tempG, tempB]
+                print('tempColor = ', tempColor)
+                
+                transitionDictTemp['temp_led_array'][led_num].append(tempColor)
+                
     for i in range(1, transition_steps):
-        if i == transition_steps:
-            #print('last step')
-            tempR = R2
-            tempG = G2
-            tempB = B2
-        else:
-            tempR = R1 + i*int(deltaR/transition_steps)
-            tempG = G1 + i*int(deltaG/transition_steps)
-            tempB = B1 + i*int(deltaB/transition_steps)
-        
-        tempColor = [tempR, tempG, tempB]
-        print('tempColor = ', tempColor)
-        
-        strip.setPixelColor(led_num, Color(tempR, tempG, tempB))
-        
-        # save this new color in history
-        if stripNum == 1:
-            LED_HISTORY_1[led_num] = tempColor
-        
-        if stripNum == 2:
-            LED_HISTORY_2[led_num] = tempColor
-        
-        # show color for total_wait_ms/transition_steps
-        
-        # total_wait_ms # Example 50
-        # transition_steps # Example 5
+        print(' => doing step ', i)
+        for transitionDictTemp in transitionDictArray:
+
+            strip = transitionDictTemp['strip']
+            if strip.numPixels() == LED_COUNT_1:
+                stripNum = 1
+            elif strip.numPixels() == LED_COUNT_2:
+                stripNum = 2
+            print('doing strip ', stripNum)
+            for led_num in transitionDictTemp['temp_led_array'].keys():
+                desired_color_Array = transitionDictTemp['temp_led_array'][led_num]
+                current_desired_color = desired_color_Array[i]
+                print('led_num ', led_num, ' needs to go to desired_color : ', desired_color)
+                [tempR, tempG, tempB] = current_desired_color
+                strip.setPixelColor(led_num, Color(tempR, tempG, tempB))
+                
+                # save this new color in history
+                if stripNum == 1:
+                    LED_HISTORY_1[led_num] = current_desired_color
+                
+                if stripNum == 2:
+                    LED_HISTORY_2[led_num] = current_desired_color
+                
+                # show color for total_wait_ms/transition_steps
+                
+                # total_wait_ms # Example 50
+                # transition_steps # Example 5
+        print('showing and sleeping for ', total_wait_ms / (transition_steps * 1000.0))
         strip.show()
         if (total_wait_ms > 0): time.sleep(total_wait_ms / (transition_steps * 1000.0))
 
@@ -530,7 +575,9 @@ def colorWipe(strip, colorArray, wait_ms=50):
             # print('in colorWipe with strip.numPixels()-i : ', strip.numPixels()-i)
             # if i == strip.numPixels()-1:
             #     strip.setPixelColor(0, color)
-        fluidColorTransition(strip, led_num, color, wait_ms, transition_steps=5)
+        transitionDictArray = [{"strip":strip, "ledNum_to_desiredColor": {led_num:color}}]
+
+        fluidColorTransition(transitionDictArray, wait_ms, transition_steps=5)
         # strip.show()
         # if (wait_ms > 0): time.sleep(wait_ms / 1000.0)
 
