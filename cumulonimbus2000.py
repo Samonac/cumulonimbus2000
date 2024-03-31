@@ -587,6 +587,12 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=10
             strip = transitionDictTemp['strip']
             strip.show()
         if (total_wait_ms > 0): time.sleep(total_wait_ms / (transition_steps * 1000.0))
+    jsonHistory = {1: LED_HISTORY_1, 2: LED_HISTORY_2}
+
+    currentTime = datetime.datetime.now()
+    with open('data/led_config/led_history_{}.json'.format(currentTime), "w") as outfile:
+        json.dump(jsonHistory, outfile)
+    print('file saved successfully : data/led_config/led_history_{}.json'.format(currentTime))
 
             
 
@@ -686,6 +692,8 @@ def identifyLedPosition(strip, stripNum):
         print('stripDict : ', stripDict) 
 
 # Main program logic follows:
+
+
 if __name__ == '__main__':
     # Process arguments
 
@@ -702,8 +710,6 @@ if __name__ == '__main__':
     strip240.begin()
     strip120.begin()
 
-    # todo : remove
-    
     currentMode = '' # skipFirst 
     userModeInput = 'temp'
      
@@ -721,13 +727,11 @@ if __name__ == '__main__':
     if not args.clear:
         print('Use "-c" argument to clear LEDs on exit')
     relaunchIndex=0
-    while True: 
-      try:
-        print('relaunchIndex =', relaunchIndex)
-        inverseI = True
-        relaunchIndex+=1  
-        if relaunchIndex < 100:
-          while True:
+    print('relaunchIndex =', relaunchIndex)
+    inverseI = True
+    relaunchIndex+=1
+    if relaunchIndex < 100:
+      while True:   # TODO : instead of "True", perform regular tasks if none, and continously read for JSON files in order to perform new tasks instead of sleep()
             print('userModeInput = {} of type {}'.format(userModeInput, type(userModeInput)))
             try:  
               if userModeInput in [1, '1', '&', 'a', 'A']:
@@ -760,6 +764,7 @@ if __name__ == '__main__':
                 # minY = max(0, int(minY))
                 # maxY = input('max Y ?\n')
                 # maxY = min(40, int(maxY))
+                colorArrayFileName = 'data/tasks/task_data/1.json'
                 filename = 'data/led_config/strip120.json'
                 with open(filename, "r") as json120file:
                     jsonFile = json120file.read()
@@ -967,9 +972,6 @@ if __name__ == '__main__':
                 fullColor(strip240, [0, 0, 0])
 
                 break
-            
-      except KeyboardInterrupt:
-        fullColor(strip120, [0, 0, 0])
-        fullColor(strip240, [0, 0, 0])
+
           
 print('Cumulonimbus2000 script has ended. Good night !')

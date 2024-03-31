@@ -1,0 +1,8 @@
+c-binding-generator/build/
+c-binding-generator/dist/
+/doc/
+/cppdocs/upload.sh
+/build/
+/dist/
+*__pycache__*
+bindings/javascript/libmetawear-path.js

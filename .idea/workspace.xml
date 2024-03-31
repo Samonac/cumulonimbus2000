@@ -2,10 +2,340 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dc872803-11fa-47dc-822e-16541c344933" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/motionDetect.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/Doxyfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/LICENSE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/MetaWear.Win32.vcxproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/MetaWear.WinRT.vcxproj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/bindings/javascript/cbindings.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/bindings/python/mbientlab/metawear/cbindings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/bindings/swift/cbindings.swift" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/config.mk" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/header.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/CHeaderFile.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/Constant.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/Enum.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/Function.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/FunctionPointer.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/Generator.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/Struct.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/Type.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/Util.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/Variable.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Arguments.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Arguments.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Builder.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Builder.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/CHeaderFile.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/CliBuilder.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/CliBuilder.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/CliOptionException.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/CliOptionException.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Constant.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/DummyGenerator.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/DummyGenerator.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Enum.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Function.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/FunctionPointer.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Option.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Option.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Struct.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Type.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Util.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/Variable.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/cli.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/c-binding-generator/src/cbinds/cpp/main.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/config.mk" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/_templates/layout.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/accelerometer.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/advanced_features.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/ambientlightsensor.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/barometer.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/btlecommunication.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/colordetector.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/conf.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/core_modules.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/dataprocessor.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/gpio.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/gyro.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/haptic.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/humidity.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/i2c.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/ibeacon.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/index.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/led.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/logging.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/macro.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/magnetometer.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/mblmwdataprocessor.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/mblmwdatasignal.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/mblmwevent.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/mblmwlogger.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/mblmwmetawearboard.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/neopixel.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/peripherals.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/proximitydetector.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/sensor_fusion.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/sensors.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/settings.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/spi.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/temperature.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/cppdocs/source/timer.rst" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/metawear_src.tar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/project_version.mk" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/anonymous_datasignal.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/anonymous_datasignal_fwd.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/anonymous_datasignal.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/anonymous_datasignal_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/constant.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/datainterpreter.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/datasignal.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/datasignal_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/debug.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/debug_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/event.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/event_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/event_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/logging.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/logging_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/logging_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/macro.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/macro_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/macro_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/metawearboard_def.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/metawearboard_macro.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/moduleinfo.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/moduleinfo.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/responseheader.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/responseheader.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/settings.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/settings_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/settings_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/timer.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/timer_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/timer_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/version.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/cpp/version.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/data.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/datasignal.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/datasignal_fwd.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/debug.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/event.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/event_fwd.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/logging.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/logging_fwd.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/macro.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/metawearboard.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/metawearboard_fwd.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/model.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/module.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/settings.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/status.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/timer.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/timer_fwd.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/core/types.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/dfu_operations.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/dfu_operations.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/dfu_operations_details.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/dfu_operations_details.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/dfu_utility.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/dfu_utility.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/file_operations.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/file_operations.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/json.hpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/miniz.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/dfu/cpp/miniz.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/generator/cpp/CSharpGenerator.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/generator/cpp/CSharpGenerator.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/generator/cpp/JavaScriptGenerator.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/generator/cpp/JavaScriptGenerator.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/generator/cpp/PythonGenerator.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/generator/cpp/PythonGenerator.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/generator/cpp/SwiftGenerator.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/generator/cpp/SwiftGenerator.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/generator/cpp/common.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/generator/cpp/common.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/impl/cpp/datainterpreter.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/impl/cpp/metawearboard.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/peripheral/cpp/haptic.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/peripheral/cpp/ibeacon.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/peripheral/cpp/led.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/peripheral/cpp/neopixel.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/peripheral/haptic.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/peripheral/ibeacon.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/peripheral/led.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/peripheral/neopixel.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/peripheral/peripheral_common.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/btle_connection.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/cpp/async_creator.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/cpp/async_creator.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/cpp/concurrent_queue.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/cpp/memory.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/cpp/task.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/cpp/task.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/cpp/threadpool.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/cpp/threadpool.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/dllmarker.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/platform/memory.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/accounter.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/accumulator.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/average.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/buffer.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/comparator.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/counter.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/cpp/dataprocessor.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/cpp/dataprocessor_config.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/cpp/dataprocessor_config.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/cpp/dataprocessor_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/cpp/dataprocessor_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/dataprocessor.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/dataprocessor_fwd.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/delta.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/fuser.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/math.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/packer.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/passthrough.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/processor_common.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/pulse.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/rms.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/rss.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/sample.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/threshold.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/processor/time.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/accelerometer.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/accelerometer_bosch.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/accelerometer_mma8452q.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/ambientlight_ltr329.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/barometer_bosch.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/colordetector_tcs34725.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/conductance.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/accelerometer.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/accelerometer_bosch.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/accelerometer_bosch_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/accelerometer_bosch_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/accelerometer_mma8452q.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/accelerometer_mma8452q_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/accelerometer_mma8452q_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/accelerometer_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/ambientlight_ltr329.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/ambientlight_ltr329_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/ambientlight_ltr329_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/barometer_bosch.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/barometer_bosch_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/barometer_bosch_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/colordetector_tcs34725.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/colordetector_tcs34725_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/colordetector_tcs34725_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/conductance.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/conductance_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/conductance_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/gpio.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/gpio_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/gpio_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/gyro_bosch.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/gyro_bosch_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/gyro_bosch_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/humidity_bme280.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/humidity_bme280_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/humidity_bme280_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/magnetometer_bmm150.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/magnetometer_bmm150_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/magnetometer_bmm150_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/multichanneltemperature.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/multichanneltemperature_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/multichanneltemperature_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/proximity_tsl2671.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/proximity_tsl2671_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/proximity_tsl2671_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/sensor_fusion.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/sensor_fusion_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/sensor_fusion_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/serialpassthrough.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/serialpassthrough_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/serialpassthrough_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/switch.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/switch_private.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/switch_register.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/utils.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/cpp/utils.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/gpio.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/gyro_bosch.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/humidity_bme280.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/i2c.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/magnetometer_bmm150.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/multichanneltemperature.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/proximity_tsl2671.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/sensor_common.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/sensor_fusion.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/spi.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/metawear/sensor/switch.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/src/module.modulemap" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/barometer_bosch_base.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/cbindings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/common.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/logdata.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/serializedstate.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_accelerometer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_accelerometer_bma255.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_accelerometer_bmi160.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_accelerometer_bmi270.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_accelerometer_bosch.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_accelerometer_mma8452q.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_ambientlight_ltr329.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_anonymous_signal.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_barometer_bme280.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_barometer_bmp280.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_colordetector_tcs34725.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_data.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_dataprocessor.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_debug.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_event.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_gpio.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_gyro_bmi160.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_haptic.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_humidity_bme280.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_i2c.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_ibeacon.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_led.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_logging.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_logging_mms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_macro.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_magnetometer_bmm150.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_metawearboard.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_multichanneltemperature.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_neopixel.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_proximity_tsl2671.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_sensor_fusion.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_sensor_fusion_config.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_settings_mms.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_spi.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_switch.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MetaWear-SDK-Cpp/test/test_timer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_tv.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/control_wand.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/flask_main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mbientlab/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mbientlab/metawear/MetaWear.Win32.dll" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mbientlab/metawear/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mbientlab/metawear/cbindings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mbientlab/metawear/metawear.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/movie_to_cloud.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/movie_to_cloud_pngAnalyzer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/old/PC_main2.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rfid_reader.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/show_things_on_screen.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cumulonimbus2000.py" beforeDir="false" afterPath="$PROJECT_DIR$/cumulonimbus2000.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/checkLeds.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cumulonimbus2000_new.py" beforeDir="false" afterPath="$PROJECT_DIR$/cumulonimbus2000_new.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +359,140 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../mainPC" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\samon\OneDrive\Documents\git\github\cumulonimbus2000" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\samon\OneDrive\Documents\git\github\cumulonimbus2000\data" />
+      <recent name="C:\Users\samon\OneDrive\Documents\git\github\cumulonimbus2000" />
+      <recent name="C:\Users\samon\OneDrive\Documents\git\github\cumulonimbus2000\old" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.lanzarote_selector">
+    <configuration name="calcifer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="cumulonimbus2000" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/calcifer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="control_wand" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="cumulonimbus2000" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/control_wand.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="flask_main (1)" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="cumulonimbus2000" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/flask_main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="lanzarote_selector" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="cumulonimbus2000" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Downloads" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/Downloads/lanzarote_selector.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="movie_to_cloud_pngAnalyzer" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Users\samon\PycharmProjects\277777788888899_project\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/movie_to_cloud_pngAnalyzer.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.calcifer" />
+      <item itemvalue="Python.control_wand" />
+      <item itemvalue="Python.flask_main (1)" />
+      <item itemvalue="Python.lanzarote_selector" />
+      <item itemvalue="Python.movie_to_cloud_pngAnalyzer" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.lanzarote_selector" />
+        <item itemvalue="Python.control_wand" />
+        <item itemvalue="Python.flask_main (1)" />
+        <item itemvalue="Python.calcifer" />
+        <item itemvalue="Python.movie_to_cloud_pngAnalyzer" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -47,25 +510,69 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1018" y="524" key="#Notifications/0.0.2560.1400@0.0.2560.1400" timestamp="1706723375951" />
+    <state x="295" y="370" width="1092" height="714" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1709558399250">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="295" y="370" width="1092" height="714" key="#com.intellij.execution.impl.EditConfigurationsDialog/2560.0.1080.1880/0.0.2560.1400@0.0.2560.1400" timestamp="1709558399250" />
+    <state x="1040" y="502" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1709738627591">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1040" y="502" key="#com.intellij.fileTypes.FileTypeChooser/2560.0.1080.1880/0.0.2560.1400@0.0.2560.1400" timestamp="1709738627591" />
     <state x="881" y="274" key="CommitChangelistDialog2" timestamp="1706723336340">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="881" y="274" key="CommitChangelistDialog2/0.0.2560.1400@0.0.2560.1400" timestamp="1706723336340" />
+    <state x="1060" y="455" key="FileChooserDialogImpl" timestamp="1710160524979">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="1060" y="455" key="FileChooserDialogImpl/2560.0.1080.1880/0.0.2560.1400@0.0.2560.1400" timestamp="1710160524979" />
+    <state width="1943" height="1125" key="GridCell.Tab.0.bottom" timestamp="1710112801631">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1943" height="1125" key="GridCell.Tab.0.bottom/2560.0.1080.1880/0.0.2560.1400@0.0.2560.1400" timestamp="1710112801631" />
+    <state width="811" height="748" key="GridCell.Tab.0.bottom/2560.0.1080.1880/0.0.2560.1400@2560.0.1080.1880" timestamp="1709722868350" />
+    <state width="1943" height="1125" key="GridCell.Tab.0.center" timestamp="1710112801631">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1943" height="1125" key="GridCell.Tab.0.center/2560.0.1080.1880/0.0.2560.1400@0.0.2560.1400" timestamp="1710112801631" />
+    <state width="811" height="748" key="GridCell.Tab.0.center/2560.0.1080.1880/0.0.2560.1400@2560.0.1080.1880" timestamp="1709722868350" />
+    <state width="1943" height="1125" key="GridCell.Tab.0.left" timestamp="1710112801627">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1943" height="1125" key="GridCell.Tab.0.left/2560.0.1080.1880/0.0.2560.1400@0.0.2560.1400" timestamp="1710112801627" />
+    <state width="811" height="748" key="GridCell.Tab.0.left/2560.0.1080.1880/0.0.2560.1400@2560.0.1080.1880" timestamp="1709722868349" />
+    <state width="1943" height="1125" key="GridCell.Tab.0.right" timestamp="1710112801631">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="1943" height="1125" key="GridCell.Tab.0.right/2560.0.1080.1880/0.0.2560.1400@0.0.2560.1400" timestamp="1710112801631" />
+    <state width="811" height="748" key="GridCell.Tab.0.right/2560.0.1080.1880/0.0.2560.1400@2560.0.1080.1880" timestamp="1709722868350" />
+    <state width="498" height="446" key="SwitcherDM" timestamp="1709573968333">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state width="498" height="446" key="SwitcherDM/2560.0.1080.1880/0.0.2560.1400@0.0.2560.1400" timestamp="1709573968333" />
     <state x="872" y="433" key="Vcs.Push.Dialog.v2" timestamp="1706723346854">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="872" y="433" key="Vcs.Push.Dialog.v2/0.0.2560.1400@0.0.2560.1400" timestamp="1706723346854" />
+    <state x="788" y="289" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1709906392148">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="788" y="289" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/2560.0.1080.1880/0.0.2560.1400@0.0.2560.1400" timestamp="1709906392148" />
     <state x="1097" y="614" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1706723296459">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1097" y="614" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.2560.1400@0.0.2560.1400" timestamp="1706723296459" />
+    <state x="549" y="196" width="1260" height="786" key="find.popup" timestamp="1710267703973">
+      <screen x="0" y="0" width="2560" height="1400" />
+    </state>
+    <state x="549" y="196" width="1260" height="786" key="find.popup/2560.0.1080.1880/0.0.2560.1400@0.0.2560.1400" timestamp="1710267703973" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/cumulonimbus2000.py</url>
-          <line>7</line>
+          <line>9</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
