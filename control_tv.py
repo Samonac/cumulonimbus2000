@@ -39,7 +39,7 @@ system = SystemControl(client)
 
 def main(task={}):
     print('In main for control_tv for task : {}'.format(task))
-    if task['action'] == 'flicker':
+    if task['action'] == 'screen_flicker':
         print('Flicker')
         index = 0
         system.screen_on()
@@ -50,14 +50,17 @@ def main(task={}):
             time.sleep(3)
             index += 1
 
-    if task['action'] == 'on':
+    if task['action'] == 'screen_on':
         print('Screen on')
         system.screen_on()
 
-
-    if task['action'] == 'off':
+    if task['action'] == 'screen_off':
         print('Screen off')
         system.screen_off()
+
+    if task['action'] == 'power_off':
+        print('Powering off')
+        system.power_off()
 
 def info():
     # system.notify("This is a notification message!",  # Show a notification message on the TV.
@@ -111,4 +114,4 @@ if __name__ == "__main__":
         main(sys.argv[1])
     else:
         main(task={"action": "flickerScreen", "delta": 5})
-        print('Usage: python script.py <task={"action":"flickerScreen", "delta":5}>')
+        print('Usage: python script.py <task={"action":"flicker_screen", "delta":5}>')

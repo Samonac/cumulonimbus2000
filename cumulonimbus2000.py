@@ -710,7 +710,7 @@ if __name__ == '__main__':
     strip240.begin()
     strip120.begin()
 
-    currentMode = '' # skipFirst 
+    currentMode = '' # skipFirst TODO : Nope, we need to check /cumulo_config
     userModeInput = 'temp'
      
     if currentMode == '':

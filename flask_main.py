@@ -1,5 +1,6 @@
 import subprocess
 import threading
+from datetime import datetime
 from flask import Flask, jsonify, request
 
 
@@ -19,8 +20,8 @@ tasks = [
     },
     {
         'id': 2,
-        'title': 'Build a RESTful API',
-        'description': 'Build a RESTful API using Flask',
+        'title': 'Show things on screen',
+        'description': 'Show things on Screen',
         'done': False,
         'python_script_path': 'show_things_on_screen.py',
         'timeout': None  # No timeout : script will just be launched, and that's it.
@@ -38,7 +39,8 @@ tasks = [
         'description': 'Control TV',
         'done': False,
         'python_script_path': 'control_tv.py',
-        'timeout': 10  # Timeout in seconds
+        'timeout': 10,  # Timeout in seconds
+        'action': None # Specify an action for the TV : screen_on / screen_off / screen_flicker / power_off
     },
     {
         'id': 5,
@@ -46,7 +48,8 @@ tasks = [
         'description': 'Control Philips Hue lights',
         'done': False,
         'python_script_path': 'calcifer.py',
-        'timeout': None  # No timeout, and (normally ?) get real-time output. No way to stop the executed script though.
+        'timeout': None,  # No timeout, and (normally ?) get real-time output. No way to stop the executed script though.
+        'action': None
     },
     {
         'id': 6,
@@ -55,8 +58,57 @@ tasks = [
         'done': False,
         'python_script_path': 'control_wand.py',
         'timeout': None  # No timeout : script will just be launched, and that's it.
+    },
+    {
+        'id': 7,
+        'title': 'launch_cumulo',
+        'description': 'Launch cumulonimbus2000.py',
+        'done': False,
+        'python_script_path': 'cumulonimbus2000.py',
+        'timeout': None,  # No timeout : script will just be launched, and that's it.
+        'action': None  # Will need to specify an action if the script must be launched in a non-default mode
+    },
+    {
+        'id': 8,
+        'title': 'rfid_tag',
+        'description': 'Launch Scripts based on the RFID number',
+        'done': False,
+        'python_script_path': 'rfid_action.py',
+        'timeout': None,  # No timeout : script will just be launched, and that's it.
+        'action': None  # Will need to specify an action if the script must be launched in a non-default mode
+    },
+    {
+        'id': 9,
+        'title': 'control_pc',
+        'description': 'Launch various scripts on the PC',
+        'done': False,
+        'python_script_path': 'control_pc.py',
+        'timeout': None,  # No timeout : script will just be launched, and that's it.
+        'action': None  # Will need to specify an action if the script must be launched in a non-default mode
+    },
+    {
+        'id': 10,
+        'title': 'control_cumulo',
+        'description': 'Change config on the cumulonimbus2000',
+        'done': False,
+        'python_script_path': 'control_cumulo.py',
+        'timeout': None,  # No timeout : script will just be launched, and that's it.
+        'action': None  # Will need to specify an action if the script must be launched in a non-default mode
+    },
+    {
+        'id': 11,
+        'title': 'control_hue',
+        'description': 'Change Hue Lighting in the Living Room',
+        'done': False,
+        'python_script_path': 'control_hue.py',
+        'timeout': None,  # No timeout : script will just be launched, and that's it.
+        'action': None  # Will need to specify an action if the script must be launched in a non-default mode
     }
 ]
+# TODO :
+#  'control_pc' : 'cumulo_mimic', 'adalight_on', 'adalight_off', 'pc_off', 'spotify_on', 'spotify_pause', 'spotify_off'
+#  'control_cumulo' : 'cumulo_on', 'cumulo_default', 'cumulo_drops', 'cumulo_gray', 'cumulo_weather', 'cumulo_ratp', 'cumulo_mimic', 'cumulo_off'
+#  'control_hue': 'hue_XX'
 
 
 
@@ -86,7 +138,8 @@ def create_task():
         'description': request.json.get('description', ""),
         'done': False,
         'python_script_path': request.json.get('python_script_path', ""),
-        'timeout': request.json.get('timeout', None)
+        'timeout': request.json.get('timeout', None),
+        'action': request.json.get('action', None)
     }
     tasks.append(task)
     return jsonify({'task': task}), 201
@@ -105,6 +158,7 @@ def update_task(task_id):
     task[0]['done'] = request.json.get('done', task[0]['done'])
     task[0]['python_script_path'] = request.json.get('python_script_path', task[0]['python_script_path'])
     task[0]['timeout'] = request.json.get('timeout', task[0]['timeout'])
+    task[0]['action'] = request.json.get('action', task[0]['action'])
     return jsonify({'task': task[0]})
 
 
@@ -174,4 +228,6 @@ def execute_script(task_id):
 
 
 if __name__ == '__main__':
+    now = datetime.now()
+    print(' ---> Running Flask at {}'.format(now))
     app.run(debug=True)
