@@ -1,0 +1,4 @@
+
+Connecting to FC:0B:09:F5:4E:A4...
+Connected to FC:0B:09:F5:4E:A4 over BLE
+Device information: {'firmware': '1.7.2', 'model': '8', 'hardware': '0.1', 'manufacturer': 'MbientLab Inc', 'serial': '056543'}
