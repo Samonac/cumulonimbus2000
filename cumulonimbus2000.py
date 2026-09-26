@@ -22,6 +22,7 @@ from dotenv import load_dotenv
 import string
 
 load_dotenv()
+autoMode = True
 intFullColor=100
 apiKey = os.getenv('RATP_API_KEY')
 query = {'MonitoringRef': 'STIF:StopArea:SP:474151:',
@@ -31,8 +32,7 @@ dataRatp = {'codesRer': {'C': 'C01727', 'N': 'C01736', 'A': 'C01742'},
             'arrayArrets': [{'name': 'Gare de Meudon', 'id': '41214', 'rer': 'N'},
                             {'name': 'Meudon Val Fleury', 'id': '41213', 'rer': 'C'}]}
 
-
-#  response = requests.get('http://httpbin.org/headers', headers=my_headers)  {}
+#  response = requests.get('http://httpbin.org/headers', headers=my_headers)
 
 async def getRatpData(saveJson=False):
     jsonOutput = {}
@@ -203,18 +203,19 @@ def getLatestData():
 
 
 # LED strip configuration:
-LED_COUNT = 240  # Number of LED pixels.
+LED_COUNT = 300  # Number of LED pixels.
 LED_PIN = 18  # GPIO pin connected to the pixels (18 uses PWM!).
-LED_COUNT_1 = 300  # Number of LED pixels.
-LED_PIN_1 = 19  # GPIO pin connected to the pixels (18 uses PWM!).
+
+LED_COUNT_1 = 297  # Number of LED pixels.
+LED_PIN_1 = 19  # Purple Cable - GPIO pin connected to the pixels (18 uses PWM!).
 LED_COUNT_2 = 120  # Number of LED pixels.
-LED_PIN_2 = 18  # GPIO pin connected to the pixels (12 uses PWM!).
+LED_PIN_2 = 18  # Blue Cable - GPIO pin connected to the pixels (12 uses PWM!).
 # LED_PIN = 10        # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA = 10  # DMA channel to use for generating signal (try 10)
 LED_DMA_1 = 10  # DMA channel to use for generating signal (try 10)
 LED_DMA_2 = 11  # DMA channel to use for generating signal (try 10)
-LED_BRIGHTNESS = 255  # Set to 0 for darkest and 255 for brightest
+LED_BRIGHTNESS = 100  # Set to 0 for darkest and 255 for brightest
 LED_INVERT = False  # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL = 0  # set to '1' for GPIOs 13, 19, 41, 45 or 53
 LED_CHANNEL_1 = 1  # set to '1' for GPIOs 13, 19, 41, 45 or 53
@@ -531,7 +532,11 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=10
 
             
             
-            transitionDictTemp['temp_led_array'][led_num] = []
+            if led_num not in transitionDictTemp['temp_led_array']:
+                transitionDictTemp['temp_led_array'][led_num] = []
+            else:
+                transitionDictTemp['temp_led_array'][led_num].clear()
+
             # need to do maxDiff delta in 5 steps for a total of 50ms
             for i in range(1, transition_steps+1):
                 if i == transition_steps:
@@ -587,12 +592,6 @@ def fluidColorTransition(transitionDictArray, total_wait_ms, transition_steps=10
             strip = transitionDictTemp['strip']
             strip.show()
         if (total_wait_ms > 0): time.sleep(total_wait_ms / (transition_steps * 1000.0))
-    jsonHistory = {1: LED_HISTORY_1, 2: LED_HISTORY_2}
-
-    currentTime = datetime.datetime.now()
-    with open('data/led_config/led_history_{}.json'.format(currentTime), "w") as outfile:
-        json.dump(jsonHistory, outfile)
-    print('file saved successfully : data/led_config/led_history_{}.json'.format(currentTime))
 
             
 
@@ -654,12 +653,13 @@ def rainbow(strip, wait_ms=500, iterations=1):
         time.sleep(wait_ms / 1000.0)
 
 
-def rainbowCycle(strip, wait_ms=500, iterations=5):
+def rainbowCycle(strip, wait_ms=1000, iterations=5):
     """Draw rainbow that uniformly distributes itself across all pixels."""
     for j in range(256 * iterations):
         for i in range(strip.numPixels()):
             strip.setPixelColor(i, wheel(
                 (int(i * 256 / strip.numPixels()) + j) & 255))
+            print('Setting pixel n°{}/{}'.format(i, strip.numPixels()))
         strip.show()
         time.sleep(wait_ms / 1000.0)
 
@@ -691,9 +691,33 @@ def identifyLedPosition(strip, stripNum):
         stripDict[i] = {'x':xInput, 'y':yInput}
         print('stripDict : ', stripDict) 
 
+
+
 # Main program logic follows:
+if __name__ == '__mainDefault__':
+    # Process arguments
 
+    # see https://stackoverflow.com/questions/45600579/asyncio-event-loop-is-closed-when-getting-loop
+    # for more details
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
+    args = parser.parse_args()
+    # Create NeoPixel object with appropriate configuration.
+    strip240 = PixelStrip(LED_COUNT_1, LED_PIN_1, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL_1)
+    # strip120 = PixelStrip(LED_COUNT_2, LED_PIN_2, LED_FREQ_HZ, LED_DMA_2, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL_2)
+    # Intialize the library (must be called once before other functions).
+    strip240.begin()
+    # strip120.begin()
+    
+    rainbowCycle(strip240, wait_ms=500, iterations=5)
+    # rainbowCycle(strip120, wait_ms=500, iterations=5)
+    print('Done!')
+    
+    
+    
+    
+# Main program logic follows:
 if __name__ == '__main__':
     # Process arguments
 
@@ -709,9 +733,30 @@ if __name__ == '__main__':
     # Intialize the library (must be called once before other functions).
     strip240.begin()
     strip120.begin()
-
-    currentMode = '' # skipFirst TODO : Nope, we need to check /cumulo_config
+    
+    currentMode = 'colors' # default launch = color
+    
+    fileName = 'cumulonimbus2000.json'
+    try:
+      with open(fileName, "r") as jsonFile:
+          jsonFile = jsonFile.read()
+          currentModeJson = json.loads(jsonFile)['params']
+          currentMode = currentModeJson['desiredMode']
+    except Exception as e:
+      print(e)
+      currentMode='fullColor'
+    
+    currentTime = datetime.datetime.now()
+    
+    # if 8 <= currentTime.hour <= 10:
+    #   print('Hour is ', currentTime.hour, ' launching weatherMode')
+    #   currentMode = 'weather'
+    if currentTime.minute <= 1:
+      print('Minute = 0, launching fullColor')
+      currentMode = 'fullColor'
+      
     userModeInput = 'temp'
+    currentMainPCdominantColors = [[], []]
      
     if currentMode == '':
       print(' a-1 / none : Weather')
@@ -727,11 +772,50 @@ if __name__ == '__main__':
     if not args.clear:
         print('Use "-c" argument to clear LEDs on exit')
     relaunchIndex=0
-    print('relaunchIndex =', relaunchIndex)
-    inverseI = True
-    relaunchIndex+=1
-    if relaunchIndex < 100:
-      while True:   # TODO : instead of "True", perform regular tasks if none, and continously read for JSON files in order to perform new tasks instead of sleep()
+    while True: 
+      try:
+        print('relaunchIndex =', relaunchIndex)
+        inverseI = True
+        relaunchIndex+=1  
+        if relaunchIndex < 100:
+          while True:
+          
+            # will need to remove this to go back to automode:
+            # autoMode=False
+            # currentMode='identify'
+          
+            if autoMode:
+              
+              currentMode = 'colors' # instead, read last json
+                        
+              try:
+                with open(fileName, "r") as jsonFile:
+                    jsonFile = jsonFile.read()
+                    currentModeJson = json.loads(jsonFile)['params']
+                    currentMode = currentModeJson['desiredMode']
+              except Exception as e:
+                print(e)
+                currentMode='fullColor'
+              
+                  
+              # requestUrl = 'http://192.168.1.14:5000/execute_script/1'
+              # print(query)
+                    
+              # try:
+              #     response = requests.post(requestUrl, json={}, headers={"Content-Type": "application/json"}, timeout=10)
+              #     mainPCdominantColors = response.json()['output']
+              # except Exception as err:
+              #     print(err)
+              #     mainPCdominantColors = currentMainPCdominantColors
+              
+              currentTime = datetime.datetime.now()
+              # if 8 <= currentTime.hour <= 10:
+              #   print('Hour is ', currentTime.hour, ' launching colors instead of weather until the later is fixed and fluid')
+              #   currentMode = 'colors'
+              if currentTime.minute <= 1:
+                print('Minute = 0 or 1, launching fullColor')
+                currentMode = 'fullColor'
+              
             print('userModeInput = {} of type {}'.format(userModeInput, type(userModeInput)))
             try:  
               if userModeInput in [1, '1', '&', 'a', 'A']:
@@ -764,7 +848,6 @@ if __name__ == '__main__':
                 # minY = max(0, int(minY))
                 # maxY = input('max Y ?\n')
                 # maxY = min(40, int(maxY))
-                colorArrayFileName = 'data/tasks/task_data/1.json'
                 filename = 'data/led_config/strip120.json'
                 with open(filename, "r") as json120file:
                     jsonFile = json120file.read()
@@ -899,15 +982,20 @@ if __name__ == '__main__':
                   
                   fullColor(strip120)
                   fullColor(strip240)
+                  
+              elif currentMode == 'blackMode':
+                  time.sleep(1)
+                  colorWipe(strip240, [0,0,0])
+                  colorWipe(strip120, [0,0,0])
+                  time.sleep(1)
+                  
+                  # fullColor(strip120)
+                  # fullColor(strip240)
 
-              elif currentMode == 'colors':
-              
+              elif currentMode in ['colors', 'mirrorTv']:
+                  
+                  
                   #print('Boot : Color wipe animations.')
-  
-                  #colorWipe(strip240, Color(0, 255, 0))  # Green wipe
-                  #colorWipe(strip120, Color(0, 255, 255))  # Cyan wipe
-                  #colorWipe(strip240, Color(0, 0, 255))  # Blue wipe
-                  # print(randrange(255))
                   R = randrange(255)
                   G = randrange(255)
                   B = randrange(255)
@@ -915,13 +1003,44 @@ if __name__ == '__main__':
                   R2 = randrange(255)
                   G2 = randrange(255)
                   B2 = randrange(255)
-                  print(' => RandomColor2 : (', R2, ', ', G2, ', ', B2, ')')
+                  print(' => RandomColor2 : (', R2, ', ', G2, ', ', B2, ')')    
+                  
+                  if currentMode == 'mirrorTv':
+                      requestUrl = 'http://192.168.1.14:5000/execute_script/1'
+                      # print(query)
+                            
+                      try:
+                          response = requests.post(requestUrl, json={}, headers={"Content-Type": "application/json"}, timeout=20)
+                          mainPCdominantColors = response.json()['output']
+                      except Exception as err:
+                          print(err)
+                          mainPCdominantColors = currentMainPCdominantColors
+                  
+                      try:
+                        if mainPCdominantColors != currentMainPCdominantColors: # TODO : need to accept +-5 offset
+                            currentMainPCdominantColors = mainPCdominantColors
+                            [[R, G, B], [R2, G2, B2]] = json.loads(mainPCdominantColors)
+                            print('MainPC dominant colors are :')
+                            
+                            print(' => DominantColor1 : (', R, ', ', G, ', ', B, ')')
+                            print(' => DominantColor2 : (', R2, ', ', G2, ', ', B2, ')')
+                        else:
+                            [[R2, G2, B2], [R, G, B]] = json.loads(mainPCdominantColors)
+                            
+                            print('MainPC mirrored dominant colors are :')
+                            
+                            print(' => DominantColor1 : (', R2, ', ', G2, ', ', B2, ')')
+                            print(' => DominantColor2 : (', R, ', ', G, ', ', B, ')')
+                          
+                      except Exception as err:
+                          print(err)
+                          
                   
                   # doubleColorWipe([strip240, strip120], [R, G, B, int((R + G + B) / 765), G, 255], 50)  # Random wipe
                   doubleColorWipe([strip240, strip120], [R, G, B, R2, G2, B2], 200)  # Random wipe
                   
                   #doubleColorWipe([strip240, strip120], [R2, G2, B2, R, G, B], 200)  # iNVERSED Random wipe
-  
+                  time.sleep(0.05)
                   #colorWipe(strip120, Color(0, 0, 0), 0)  # Black wipe
                   #colorWipe(strip240, Color(0, 0, 0), 0)  # Black wipe
   
@@ -972,6 +1091,9 @@ if __name__ == '__main__':
                 fullColor(strip240, [0, 0, 0])
 
                 break
-
+            
+      except KeyboardInterrupt:
+        fullColor(strip120, [0, 0, 0])
+        fullColor(strip240, [0, 0, 0])
           
 print('Cumulonimbus2000 script has ended. Good night !')
