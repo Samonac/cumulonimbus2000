@@ -1,1 +1,10 @@
 .env
+
+# Calibration: ignore the bulky per-run captures, but KEEP the system config
+# and the built 2D model matrix the service/animations depend on.
+data/calibration/runs/
+!data/calibration/systems.json
+!data/calibration/led_geometry.json
+
+__pycache__/
+*.pyc

@@ -145,11 +145,16 @@ MIRROR_TV_URL = os.getenv("MIRROR_TV_URL", "http://192.168.1.14:5000/execute_scr
 # Kept identical in shape to cumulonimbus2000: {"params": {"desiredMode": "..."}}
 MODE_STATE_FILE = "cumulonimbus2000.json"
 
+# 2D model matrix produced from the latest webcam calibration
+# (build_led_geometry.py). Maps each detected LED to real-world (x, y) so
+# coordinate-aware animations (raindrop) can run. Absent off-Pi/pre-calibration.
+LED_GEOMETRY_FILE = os.path.join("data", "calibration", "led_geometry.json")
+
 
 # ---------------------------------------------------------------------------
 # LED strip configuration (verbatim from cumulonimbus2000.py)
 # ---------------------------------------------------------------------------
-LED_COUNT_1 = 297           # strip240 - number of LED pixels
+LED_COUNT_1 = 300           # strip240 - number of LED pixels
 LED_PIN_1 = 19              # Purple cable - GPIO 19
 LED_COUNT_2 = 120           # strip120 - number of LED pixels
 LED_PIN_2 = 18              # Blue cable - GPIO 18
@@ -167,7 +172,16 @@ DEFAULT_FULL_COLOR_INTENSITY = 100
 VALID_MODES = [
     "colors", "weather", "ratp", "fullColor", "specificColor",
     "blackMode", "mirrorTv", "identify", "manual", "rainbow",
+    "calibration", "raindrop",
 ]
+
+# Strip identity (Z) -> internal attribute name. This is the stable "strip
+# number" that external tooling (the webcam calibration script) uses to refer
+# to a physical strip regardless of its pixel count.
+STRIP_IDENTITY = {
+    1: {"name": "strip240", "count": LED_COUNT_1, "pin": LED_PIN_1, "channel": LED_CHANNEL_1},
+    2: {"name": "strip120", "count": LED_COUNT_2, "pin": LED_PIN_2, "channel": LED_CHANNEL_2},
+}
 
 
 # ---------------------------------------------------------------------------
@@ -389,6 +403,29 @@ class LedController:
         self.LED_HISTORY_1 = [[0, 0, 0] for _ in range(LED_COUNT_1 + 1)]
         self.LED_HISTORY_2 = [[0, 0, 0] for _ in range(LED_COUNT_2 + 1)]
 
+        # Calibration: remember the single pixel currently lit so we can clear
+        # ONLY it instead of rewriting whole strips every step. Rewriting both
+        # strips and issuing several show() calls per step glitches strip120,
+        # whose PWM channel (GPIO18/ch0) shares the peripheral with strip240
+        # (GPIO19/ch1); minimal writes + one show() per changed strip fixes it.
+        self._calib_last: Optional[tuple] = None  # (stripNum, index)
+
+        # 2D geometry (from the latest calibration) + raindrop animation state.
+        self.geometry: Optional[dict] = None
+        # Flat list of placed LEDs: [(stripNum, index, x, y), ...].
+        self._geo_points: List[tuple] = []
+        self._raindrops: List[dict] = []
+        self._raindrop_last_t: Optional[float] = None
+        self.params.update({
+            "raindrop_speed": 0.6,      # ring expansion speed (units/second)
+            "raindrop_ring_width": 0.08,  # thickness of a ring (units)
+            "raindrop_rate": 1.2,       # avg new drops per second
+            "raindrop_fade": 0.86,      # per-frame background fade (0..1)
+            "raindrop_fps": 30.0,       # target animation frames per second
+            "raindrop_max_drops": 8,    # concurrent ripples cap
+        })
+        self.load_geometry()
+
     # -- strip helpers ------------------------------------------------------
     def _strip_for_num(self, count: int):
         if count == LED_COUNT_1:
@@ -407,6 +444,153 @@ class LedController:
         if name in ("strip120", "120", "2", "small", "blue"):
             return self.strip120
         return None
+
+    def strip_by_identity(self, z: int):
+        """Resolve a strip from its stable identity number Z (1, 2, ...)."""
+        meta = STRIP_IDENTITY.get(int(z))
+        if meta is None:
+            return None, None
+        return self.strip_by_name(meta["name"]), meta
+
+    def list_strips(self) -> List[dict]:
+        """Return the strips keyed by their identity Z (for the calibrator)."""
+        out = []
+        for z in sorted(STRIP_IDENTITY.keys()):
+            meta = STRIP_IDENTITY[z]
+            strip = self.strip_by_name(meta["name"])
+            out.append({
+                "z": z,
+                "name": meta["name"],
+                "count": strip.numPixels() if strip else meta["count"],
+                "pin": meta["pin"],
+                "channel": meta["channel"],
+            })
+        return out
+
+    # -- 2D geometry (model matrix from calibration) ------------------------
+    def load_geometry(self, path: str = LED_GEOMETRY_FILE) -> bool:
+        """Load the LED 2D model matrix produced by build_led_geometry.py.
+
+        Builds a flat list of placed LEDs [(stripNum, index, x, y), ...] mapping
+        each strip identity Z to its live strip. Safe no-op (returns False) if
+        the file is missing or malformed, so the service still boots off-Pi and
+        before any calibration exists.
+        """
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                geo = json.load(f)
+        except Exception:
+            with self._lock:
+                self.geometry = None
+                self._geo_points = []
+            return False
+
+        points: List[tuple] = []
+        for z_str, strip in geo.get("strips", {}).items():
+            try:
+                z = int(z_str)
+            except (TypeError, ValueError):
+                continue
+            # Map identity Z -> internal strip number (1/2) used by history.
+            _strip_obj, meta = self.strip_by_identity(z)
+            if _strip_obj is None:
+                continue
+            _, stripNum = self._strip_for_num(_strip_obj.numPixels())
+            for n_str, xy in strip.get("leds", {}).items():
+                try:
+                    idx = int(n_str)
+                    x, y = float(xy[0]), float(xy[1])
+                except (TypeError, ValueError, IndexError):
+                    continue
+                points.append((stripNum, idx, x, y))
+
+        with self._lock:
+            self.geometry = geo
+            self._geo_points = points
+        return True
+
+    def _strip_obj_by_num(self, stripNum: int):
+        return self.strip240 if stripNum == 1 else self.strip120
+
+    def geometry_summary(self) -> Optional[dict]:
+        if not self.geometry:
+            return None
+        return {
+            "source_run": self.geometry.get("source_run"),
+            "unit": self.geometry.get("unit"),
+            "bounds": self.geometry.get("bounds"),
+            "total_detected": self.geometry.get("total_detected"),
+            "placed_points": len(self._geo_points),
+        }
+
+    # -- calibration (single LED lit, everything else off) ------------------
+    def blackout_all(self):
+        """Turn every pixel on every strip off."""
+        with self._lock:
+            self.fullColor(self.strip240, [0, 0, 0])
+            self.fullColor(self.strip120, [0, 0, 0])
+            # No calibration pixel is lit anymore; forget the last one so the
+            # next calibration_light() does not try to clear a stale index.
+            self._calib_last = None
+
+    def calibration_light(self, z: int, index: int, rgb: Optional[List[int]] = None):
+        """Light exactly one LED (strip Z, pixel `index`) so the camera sees a
+        single bright point at a time.
+
+        Only the previously lit calibration pixel is turned off (not the whole
+        display) and show() is called at most once per changed strip. This
+        avoids the multi-render burst that used to flash strip120, which shares
+        its PWM peripheral with strip240. Start from a clean state by calling
+        /api/calibration/clear (blackout_all) once before the first LED.
+
+        The caller is expected to have put the controller into 'calibration'
+        mode first (POST /api/mode {"mode": "calibration"}) so the render loop
+        does not overwrite these pixels.
+        """
+        strip, meta = self.strip_by_identity(z)
+        if strip is None:
+            raise ValueError("unknown strip identity '{}'".format(z))
+        if not (0 <= int(index) < strip.numPixels()):
+            raise ValueError(
+                "index {} out of range for strip {} (0..{})".format(
+                    index, z, strip.numPixels() - 1))
+        rgb = [_clamp8(c) for c in (rgb or [255, 255, 255])]
+        _, target_num = self._strip_for_num(strip.numPixels())
+        with self._lock:
+            # Minimal-write strategy. strip120 (GPIO18/PWM ch0) shares the PWM
+            # peripheral with strip240 (GPIO19/ch1), so rewriting whole strips
+            # and issuing several show() calls per step used to glitch/flash
+            # strip120. Instead we clear ONLY the previously lit pixel, set the
+            # new one, and call show() exactly once per strip that changed.
+            changed_nums = set()
+
+            # 1) Clear the previously lit calibration pixel (if any).
+            if self._calib_last is not None:
+                prev_num, prev_idx = self._calib_last
+                prev_strip = self._strip_obj_by_num(prev_num)
+                if prev_strip is not None:
+                    prev_strip.setPixelColor(int(prev_idx), Color(0, 0, 0))
+                    if prev_num in (1, 2):
+                        self._history_for(prev_num)[int(prev_idx)] = [0, 0, 0]
+                    changed_nums.add(prev_num)
+
+            # 2) Light the single target pixel.
+            strip.setPixelColor(int(index), Color(*rgb))
+            if target_num in (1, 2):
+                self._history_for(target_num)[int(index)] = rgb
+            changed_nums.add(target_num)
+
+            # 3) One show() per changed strip only. On the shared peripheral,
+            #    render the OTHER strip first and the target strip last so the
+            #    lit frame is the final latch on that channel.
+            for num in sorted(changed_nums, key=lambda k: k == target_num):
+                s = self._strip_obj_by_num(num)
+                if s is not None:
+                    s.show()
+
+            self._calib_last = (target_num, int(index))
+        return {"z": z, "index": int(index), "rgb": rgb,
+                "count": strip.numPixels(), "name": meta["name"]}
 
     # -- core fluid transition (history-preserving) -------------------------
     def fluidColorTransition(self, transitionDictArray, total_wait_ms, transition_steps=10):
@@ -705,6 +889,10 @@ class LedController:
             self.set_all(cmd["strip"], cmd["rgb"])
         elif action == "brightness":
             self.set_brightness(cmd["value"])
+        elif action == "calibration_light":
+            self.calibration_light(cmd["z"], cmd["index"], cmd.get("rgb"))
+        elif action == "blackout":
+            self.blackout_all()
 
     # -- interruption helpers ----------------------------------------------
     def _should_abort(self) -> bool:
@@ -740,6 +928,13 @@ class LedController:
             self.mode = mode
             if persist:
                 self.write_persisted_mode(mode)
+            if mode == "raindrop":
+                # Start the ripple field clean.
+                self._raindrops = []
+                self._raindrop_last_t = None
+                for buf in (self.LED_HISTORY_1, self.LED_HISTORY_2):
+                    for i in range(len(buf)):
+                        buf[i] = [0, 0, 0]
         # Interrupt any running animation immediately.
         self._command_queue.put({"action": "noop"})
 
@@ -784,8 +979,9 @@ class LedController:
         with self._lock:
             mode = self.mode
 
-        if mode == "manual":
-            # API fully drives the pixels; just idle.
+        if mode in ("manual", "calibration"):
+            # API fully drives the pixels; just idle so calibration/manual
+            # commands are not overwritten by an animation.
             self._interruptible_sleep(0.1)
         elif mode == "blackMode":
             self.colorWipe(self.strip240, [0, 0, 0], 3)
@@ -799,6 +995,8 @@ class LedController:
         elif mode == "rainbow":
             self.rainbowCycle(self.strip240, wait_ms=20, iterations=1)
             self.rainbowCycle(self.strip120, wait_ms=20, iterations=1)
+        elif mode == "raindrop":
+            self._tick_raindrop()
         elif mode in ("colors", "mirrorTv", "specificColor"):
             self._tick_colors(mode)
         elif mode == "weather":
@@ -840,6 +1038,111 @@ class LedController:
         self.doubleColorWipe([R, G, B, R2, G2, B2], int(self.params["wipe_wait_ms"]))
         self._interruptible_sleep(float(self.params["colors_interval_s"]))
 
+    # -- raindrop ripple (coordinate-aware) ---------------------------------
+    def _tick_raindrop(self):
+        """Rain droplets whose rings propagate across the whole 2D layout.
+
+        Uses the calibrated real-world (x, y) of each LED: each drop is a point
+        that emits an expanding ring; an LED lights when the ring radius passes
+        over its distance-from-drop, so the wavefront sweeps the physical
+        surface regardless of how the strips are wired.
+        """
+        if not self._geo_points:
+            # No calibration/geometry available: fall back to a gentle glow so
+            # the mode still does something visible, and tell the user via log.
+            self._render_error = ("raindrop: no led_geometry.json; run "
+                                  "led_calibrator.py then build_led_geometry.py")
+            self.fullColor(self.strip120, [0, 0, 20])
+            self.fullColor(self.strip240, [0, 0, 20])
+            self._interruptible_sleep(0.5)
+            return
+
+        p = self.params
+        fps = max(1.0, float(p["raindrop_fps"]))
+        frame_dt = 1.0 / fps
+        now = time.time()
+        if self._raindrop_last_t is None:
+            self._raindrop_last_t = now
+        dt = min(0.25, max(0.0, now - self._raindrop_last_t))
+        self._raindrop_last_t = now
+
+        bounds = (self.geometry or {}).get("bounds", {}) if self.geometry else {}
+        min_x = bounds.get("min_x", 0.0)
+        max_x = bounds.get("max_x", 1.0)
+        min_y = bounds.get("min_y", 0.0)
+        max_y = bounds.get("max_y", 1.0)
+        diagonal = bounds.get("diagonal") or (
+            ((max_x - min_x) ** 2 + (max_y - min_y) ** 2) ** 0.5) or 1.0
+
+        speed = float(p["raindrop_speed"])
+        ring_w = max(1e-3, float(p["raindrop_ring_width"]))
+        rate = float(p["raindrop_rate"])
+        fade = min(0.999, max(0.0, float(p["raindrop_fade"])))
+        max_drops = int(p["raindrop_max_drops"])
+
+        # Spawn new drops (Poisson-ish): probability rate*dt per frame.
+        if len(self._raindrops) < max_drops:
+            if (randrange(10000) / 10000.0) < min(1.0, rate * frame_dt):
+                cool = [
+                    [30, 120, 255], [0, 200, 255], [80, 160, 255],
+                    [0, 255, 220], [120, 100, 255],
+                ][randrange(5)]
+                self._raindrops.append({
+                    "cx": min_x + (randrange(10000) / 10000.0) * (max_x - min_x),
+                    "cy": min_y + (randrange(10000) / 10000.0) * (max_y - min_y),
+                    "r": 0.0,
+                    "color": cool,
+                })
+
+        # Advance drops; drop those whose ring has swept past the whole layout.
+        alive = []
+        for d in self._raindrops:
+            d["r"] += speed * frame_dt
+            if d["r"] <= diagonal + ring_w:
+                alive.append(d)
+        self._raindrops = alive
+
+        # Accumulate colour per LED from all active rings, over a faded base.
+        buf1 = self.LED_HISTORY_1
+        buf2 = self.LED_HISTORY_2
+        # Fade existing state toward black.
+        for buf in (buf1, buf2):
+            for i in range(len(buf)):
+                c = buf[i]
+                if c[0] or c[1] or c[2]:
+                    buf[i] = [int(c[0] * fade), int(c[1] * fade), int(c[2] * fade)]
+
+        for (stripNum, idx, x, y) in self._geo_points:
+            acc_r = acc_g = acc_b = 0.0
+            for d in self._raindrops:
+                dist = ((x - d["cx"]) ** 2 + (y - d["cy"]) ** 2) ** 0.5
+                delta = abs(dist - d["r"])
+                if delta <= ring_w:
+                    # Triangular ring profile + fade as the ripple ages/expands.
+                    ring_i = 1.0 - (delta / ring_w)
+                    age = 1.0 - min(1.0, d["r"] / (diagonal + ring_w))
+                    inten = ring_i * (0.35 + 0.65 * age)
+                    acc_r += d["color"][0] * inten
+                    acc_g += d["color"][1] * inten
+                    acc_b += d["color"][2] * inten
+            if acc_r or acc_g or acc_b:
+                buf = buf1 if stripNum == 1 else buf2
+                cur = buf[idx]
+                buf[idx] = [min(255, int(cur[0] + acc_r)),
+                            min(255, int(cur[1] + acc_g)),
+                            min(255, int(cur[2] + acc_b))]
+
+        # Push both strips' buffers to the hardware.
+        for stripNum, strip, buf in ((1, self.strip240, buf1),
+                                     (2, self.strip120, buf2)):
+            n = strip.numPixels()
+            for i in range(n):
+                c = buf[i]
+                strip.setPixelColor(i, Color(c[0], c[1], c[2]))
+            strip.show()
+
+        self._interruptible_sleep(frame_dt)
+
     def _refresh_weather_ratp(self):
         try:
             if os.name == "nt":
@@ -866,6 +1169,8 @@ class LedController:
                     "strip120": {"count": self.strip120.numPixels(),
                                  "pin": LED_PIN_2, "channel": LED_CHANNEL_2},
                 },
+                "strips_by_identity": self.list_strips(),
+                "geometry": self.geometry_summary(),
                 "params": dict(self.params),
                 "valid_modes": VALID_MODES,
                 "render_error": self._render_error,
@@ -932,6 +1237,17 @@ class ParamsRequest(BaseModel):
 
 class PauseRequest(BaseModel):
     paused: bool
+
+
+class CalibrationLedRequest(BaseModel):
+    z: int = Field(..., ge=1, description="Strip identity number Z.", examples=[1])
+    index: int = Field(..., ge=0, description="LED index N on strip Z.")
+    rgb: List[int] = Field([255, 255, 255], min_length=3, max_length=3,
+                           description="Colour to light the single LED with.",
+                           examples=[[255, 255, 255]])
+    ensure_mode: bool = Field(
+        True, description="Force the controller into 'calibration' mode first "
+                          "so the render loop will not overwrite the pixel.")
 
 
 # -- lifecycle --------------------------------------------------------------
@@ -1012,6 +1328,37 @@ def set_brightness(req: BrightnessRequest):
     return {"queued": True, "value": req.value}
 
 
+@app.get("/api/strips", tags=["calibration"],
+         summary="List strips by identity Z (count, pin, channel)")
+def list_strips():
+    return {"strips": controller.list_strips()}
+
+
+@app.post("/api/calibration/led", tags=["calibration"],
+          summary="Light exactly one LED (strip Z, index N); all others OFF")
+def calibration_led(req: CalibrationLedRequest):
+    """Synchronous: the LED is lit before this returns, so the webcam client
+    can immediately capture a frame. Blacks out every other pixel on every
+    strip so the camera sees a single bright point."""
+    if controller.strip_by_identity(req.z)[0] is None:
+        raise HTTPException(status_code=404,
+                            detail="unknown strip identity {}".format(req.z))
+    if req.ensure_mode and controller.mode != "calibration":
+        controller.set_mode("calibration", persist=False)
+    try:
+        result = controller.calibration_light(req.z, req.index, req.rgb)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return {"lit": True, **result}
+
+
+@app.post("/api/calibration/clear", tags=["calibration"],
+          summary="Turn every LED on every strip OFF")
+def calibration_clear():
+    controller.blackout_all()
+    return {"cleared": True}
+
+
 @app.post("/api/params", tags=["config"], summary="Live-edit animation parameters")
 def set_params(req: ParamsRequest):
     controller.params.update(req.params)
@@ -1025,6 +1372,18 @@ def set_params(req: ParamsRequest):
 def refresh_data():
     controller._refresh_weather_ratp()
     return {"refreshed": True}
+
+
+@app.get("/api/geometry", tags=["config"], summary="LED 2D model matrix summary")
+def get_geometry():
+    return {"geometry": controller.geometry_summary()}
+
+
+@app.post("/api/geometry/reload", tags=["config"],
+          summary="Reload led_geometry.json (after a new calibration)")
+def reload_geometry():
+    ok = controller.load_geometry()
+    return {"loaded": ok, "geometry": controller.geometry_summary()}
 
 
 # -- Web UI -----------------------------------------------------------------
@@ -1067,6 +1426,33 @@ INDEX_HTML = """<!DOCTYPE html>
   <section>
     <h2>Mode</h2>
     <div class="row" id="modes"></div>
+  </section>
+
+  <section>
+    <h2>Raindrop ripple</h2>
+    <div class="sub" id="geoInfo" style="margin-bottom:10px">geometry: loading...</div>
+    <div class="row">
+      <button onclick="setMode('raindrop')">Start raindrop</button>
+      <button onclick="api('/api/geometry/reload','POST').then(loadGeometry)">Reload calibration</button>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <label>Speed</label>
+      <input type="range" id="rdSpeed" min="0.1" max="2.0" step="0.05" value="0.6"
+             oninput="rdVal('rdSpeed')"/><span id="rdSpeedV">0.60</span>
+    </div>
+    <div class="row">
+      <label>Rate</label>
+      <input type="range" id="rdRate" min="0.1" max="4.0" step="0.1" value="1.2"
+             oninput="rdVal('rdRate')"/><span id="rdRateV">1.2</span>
+    </div>
+    <div class="row">
+      <label>Ring width</label>
+      <input type="range" id="rdRing" min="0.02" max="0.3" step="0.01" value="0.08"
+             oninput="rdVal('rdRing')"/><span id="rdRingV">0.08</span>
+    </div>
+    <div class="row" style="margin-top:8px">
+      <button onclick="applyRaindrop()">Apply parameters</button>
+    </div>
   </section>
 
   <section>
@@ -1139,9 +1525,43 @@ async function loadModes() {
     const b = document.createElement('button');
     b.textContent = m;
     if (m === data.current) b.classList.add('active');
-    b.onclick = async () => { await api('/api/mode','POST',{mode:m,persist:true}); loadModes(); refreshStatus(); };
+    b.onclick = () => setMode(m);
     el.appendChild(b);
   });
+}
+
+async function setMode(m) {
+  await api('/api/mode','POST',{mode:m,persist:true});
+  loadModes(); refreshStatus();
+}
+
+function rdVal(id) {
+  const v = document.getElementById(id).value;
+  document.getElementById(id + 'V').textContent = (id==='rdRate') ? v : parseFloat(v).toFixed(2);
+}
+
+async function applyRaindrop() {
+  const params = {
+    raindrop_speed: parseFloat(document.getElementById('rdSpeed').value),
+    raindrop_rate: parseFloat(document.getElementById('rdRate').value),
+    raindrop_ring_width: parseFloat(document.getElementById('rdRing').value),
+  };
+  await api('/api/params','POST',{params});
+}
+
+async function loadGeometry() {
+  const g = (await api('/api/geometry')).geometry;
+  const el = document.getElementById('geoInfo');
+  if (!g) {
+    el.textContent = 'geometry: none - run led_calibrator.py then build_led_geometry.py';
+    el.style.color = '#d29922';
+  } else {
+    const b = g.bounds || {};
+    el.textContent = 'geometry: ' + g.total_detected + ' LEDs, ' +
+      (b.width||0).toFixed(2) + 'x' + (b.height||0).toFixed(2) + ' ' + (g.unit||'') +
+      ' (run ' + (g.source_run||'?') + ')';
+    el.style.color = '#8b949e';
+  }
 }
 
 async function fillStrip() {
@@ -1178,7 +1598,7 @@ async function refreshStatus() {
 function tickSwatch(){ document.getElementById('fillSwatch').style.background = document.getElementById('fillColor').value; }
 document.getElementById('fillColor').addEventListener('input', tickSwatch);
 
-loadModes(); refreshStatus(); tickSwatch();
+loadModes(); refreshStatus(); tickSwatch(); loadGeometry();
 setInterval(refreshStatus, 5000);
 </script>
 </body>

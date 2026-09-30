@@ -1,0 +1,37 @@
+{
+  "_comment": "Preconfigured LED strip systems the local PC webcam calibrator can target. Pick one with: python led_calibrator.py --system <name>. HTTP is required (the service is cumulonimbus2001.py running on the target). SSH is optional and only used to (re)start the service remotely.",
+  "systems": {
+    "cumulonimbus": {
+      "description": "Raspberry Pi 2W driving strip240 (Z=1) + strip120 (Z=2).",
+      "http": {
+        "base_url": "http://192.168.1.100:8000",
+        "timeout_s": 20
+      },
+      "ssh": {
+        "enabled": false,
+        "host": "192.168.1.100",
+        "port": 22,
+        "user": "pi",
+        "key_file": "~/.ssh/id_rsa",
+        "start_command": "sudo python3 /home/pi/cumulonimbus2000/cumulonimbus2001.py",
+        "note": "Optional. Only used with --remote-start to launch the service before calibrating."
+      },
+      "strips": [
+        { "z": 1, "name": "strip240", "count": 297 },
+        { "z": 2, "name": "strip120", "count": 120 }
+      ]
+    },
+    "localhost-sim": {
+      "description": "cumulonimbus2001.py running locally with the off-Pi simulator (for dev/testing the pipeline without a real Pi).",
+      "http": {
+        "base_url": "http://127.0.0.1:8000",
+        "timeout_s": 20
+      },
+      "ssh": { "enabled": false },
+      "strips": [
+        { "z": 1, "name": "strip240", "count": 297 },
+        { "z": 2, "name": "strip120", "count": 120 }
+      ]
+    }
+  }
+}
